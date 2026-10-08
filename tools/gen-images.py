@@ -307,8 +307,8 @@ def g_led_bar(d, cx, cy, k, c, w):
 
 def g_folder_filled(d, cx, cy, k, c, w):
     """Fylt mappe (farge skiller mappene), litt større, med plass til tittel under."""
-    x0, y0, x1, y1 = cx - 26 * k, cy - 16 * k, cx + 26 * k, cy + 18 * k
-    tab_h = 8 * k
+    x0, y0, x1, y1 = cx - 22 * k, cy - 14 * k, cx + 22 * k, cy + 16 * k
+    tab_h = 7 * k
     # flat farge, ingen skygge eller kant: tapp og kropp i samme tone
     d.rounded_rectangle((x0, y0, x0 + 22 * k, y0 + tab_h + 4 * k), radius=4 * k, fill=c)
     d.rounded_rectangle((x0, y0 + tab_h, x1, y1), radius=5 * k, fill=c)
@@ -328,6 +328,21 @@ FOLDER_COLORS = [
 ]
 
 
+def colored_tile(size, color, draw_glyph=None):
+    """Flis i flat farge (som MA3s appearance-farger), kant i litt lysere tone, hvit (eller mørk) glyf oppå."""
+    S = 576
+    k = S / 144
+    img = Image.new("RGB", (S, S), (16, 21, 28))
+    d = ImageDraw.Draw(img)
+    edge = tuple(min(255, int(ch * 0.75 + 255 * 0.25)) for ch in color)
+    d.rounded_rectangle((6 * k, 6 * k, 138 * k, 138 * k), radius=14 * k, fill=color, outline=edge, width=int(3 * k))
+    if draw_glyph:
+        lum = (0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]) / 255
+        glyph_color = (16, 21, 28) if lum > 0.6 else WHITE
+        draw_glyph(d, 72 * k, 58 * k, k, glyph_color, int(4 * k))
+    return img.resize((size, size), Image.LANCZOS)
+
+
 def folder_sheet(out):
     cols = 5
     cell, pad = 144, 24
@@ -338,7 +353,7 @@ def folder_sheet(out):
     for i, (name, color) in enumerate(FOLDER_COLORS):
         x = pad + (i % cols) * (cell + pad)
         y = pad + (i // cols) * (cell + pad + 28)
-        sheet.paste(glyph_tile(cell, g_folder_filled, color), (x, y))
+        sheet.paste(colored_tile(cell, color, g_folder_filled), (x, y))
         tw = d.textlength(name, font=f)
         d.text((x + (cell - tw) / 2, y + cell + 4), name, font=f, fill=(220, 220, 220))
     sheet.save(out)
@@ -441,7 +456,8 @@ def main():
     FOLDERS = os.path.join(ICONS, "folders")
     os.makedirs(FOLDERS, exist_ok=True)
     for name, color in FOLDER_COLORS:
-        glyph_tile(144, g_folder_filled, color).save(os.path.join(FOLDERS, f"Folder {name}.png"))
+        colored_tile(144, color, g_folder_filled).save(os.path.join(FOLDERS, f"Folder {name}.png"))
+        colored_tile(144, color).save(os.path.join(FOLDERS, f"Tile {name}.png"))  # bare farget flis, til andre taster
     folder_sheet(os.path.join(ROOT, "notes", "mock", "folder-sheet.png"))
     icon_sheet(os.path.join(ROOT, "notes", "mock", "icon-sheet.png"))
     icon_sheet(os.path.join(ROOT, "notes", "mock", "icon-sheet-cyan.png"), cyan=True)
