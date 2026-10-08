@@ -10,6 +10,7 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 
 - **Follow mode.** Every page in a DeckSync profile carries a page marker. When a page appears on one deck, the other decks jump to the same page. No loops, no polling.
 - **Page indicator.** A display key that shows which page any deck is on, name and number, wherever you put it.
+- **Folders.** Folder and Back keys that open a page on one deck only, styled with the page's own name and icon.
 - **Go to page.** One key sends each deck to its own page, for example the 15-key deck to page 2 while Stream Deck + stays on page 1.
 - **Page dial** (Stream Deck +). Turn to pick a page, press to go there, hold and turn to choose the target (ALL decks or a single one). The touch strip shows the page name and `p3 → ALL`.
 - **Target key.** The same target switch on an ordinary key.
@@ -96,9 +97,14 @@ Pages are named in the Stream Deck app, in the DeckSync profile of each deck. De
 
 ## Folders
 
-Need more keys on a page than a deck has? Use the Stream Deck app's own folders. Put a folder on the page, and fill it with as many keys and pages as you like. DeckSync syncs at page level, so the other decks stay where they are while you work inside a folder, and if another deck turns the page, this deck leaves the folder and follows. The strip and the sync square keep showing the last known page while a deck is inside a folder.
+Need more keys than a page has? DeckSync has its own folders, built from pages of the DeckSync profile, so you keep full control of their look.
 
-A plain key background in the same style as the DeckSync keys is in the [icons](icons) folder: `DeckSync Tile.png`. Set it on folder keys, or any key, with "Set from file" in the Stream Deck app, and add your own title or icon on top.
+- **Folder** key: pick a page of this deck in its settings. The key shows that page's name and icon from the Stream Deck app, with a small folder mark in the corner. Pressing it takes **this deck only** to that page; the other decks stay where they are.
+- **Back** key: put one on the folder page. It shows the page the deck came from and takes it back there.
+- If another deck turns the page while this deck is inside a folder, this deck leaves the folder and follows, just like the app's own folders.
+- Folder pages are ordinary pages, so they also appear on the page dial and in Go to page. Raise `pages` in `decksync.config.json` if you need more of them.
+
+The Stream Deck app's own folders work too, but they cannot show DeckSync's styling, and the strip only keeps the last known page while a deck is inside one. A plain key background in the DeckSync style is in the [icons](icons) folder (`DeckSync Tile.png`) for keys you style yourself.
 
 ## Tips and limitations
 

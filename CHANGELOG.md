@@ -7,7 +7,7 @@ First public release.
 - Renamed from Tandem to DeckSync (`app.decksync`).
 - Generated profiles per device type (Stream Deck, Mini, XL, +, Neo) with a page marker on every page, Next/Previous keys and a page dial on Stream Deck +.
 - First-run install: each new deck is switched to its DeckSync profile once, one device at a time.
-- Actions: Page marker, Page indicator, Go to page, Page dial, Target.
+- Actions: Page marker, Page indicator, Folder, Back, Go to page, Page dial, Target.
 - Custom deck names, shared by all dials and Target keys.
 - Page names read from the Stream Deck app's profiles, shown on markers, the dial and in Go to page.
 - Page markers rendered as images (page name large, "p3" small); custom touch-strip layout for the dial.
