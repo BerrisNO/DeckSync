@@ -238,8 +238,76 @@ def g_gear(d, cx, cy, k, c, w):
         d.line((cx + (r + 1 * k) * math.cos(a), cy + (r + 1 * k) * math.sin(a), cx + (r + 7 * k) * math.cos(a), cy + (r + 7 * k) * math.sin(a)), fill=c, width=w + int(k))
 
 
+def _yoke(d, cx, cy, k, c, w, arm_top, base_y):
+    """Base og U-formet yoke, felles for moving heads."""
+    d.rounded_rectangle((cx - 19 * k, base_y, cx + 19 * k, base_y + 6 * k), radius=2 * k, outline=c, width=w)
+    for s in (-1, 1):
+        d.line((cx + s * 19 * k, base_y, cx + s * 19 * k, arm_top), fill=c, width=w)
+        d.line((cx + s * 19 * k, arm_top, cx + s * 14 * k, arm_top), fill=c, width=w)
+
+
+def g_moving_head(d, cx, cy, k, c, w):
+    """Moving head med langt beam-hode (à la MegaPointe): base, yoke-armer og et vippet hode med tykk linse i fronten."""
+    base_y = cy + 20 * k
+    d.rounded_rectangle((cx - 17 * k, base_y, cx + 17 * k, base_y + 6 * k), radius=2 * k, outline=c, width=w)
+    for sgn in (-1, 1):
+        d.line((cx + sgn * 17 * k, base_y, cx + sgn * 17 * k, cy + 2 * k), fill=c, width=w)
+    ang = math.radians(-22)
+    hw, hh = 10 * k, 22 * k
+    rot = lambda dx, dy: (cx + dx * math.cos(ang) - dy * math.sin(ang), cy - 2 * k + dx * math.sin(ang) + dy * math.cos(ang))
+    pts = [rot(-hw, -hh), rot(hw, -hh), rot(hw, hh), rot(-hw, hh)]
+    d.polygon(pts, fill=(35, 46, 61), outline=c, width=w)
+    d.line((pts[0], pts[1]), fill=c, width=w + int(2 * k))  # linsen
+    # pivot-prikker der armene møter hodet
+    for sgn in (-1, 1):
+        px, py = cx + sgn * 17 * k, cy + 2 * k
+        d.ellipse((px - 2.5 * k, py - 2.5 * k, px + 2.5 * k, py + 2.5 * k), fill=c)
+
+
+def g_beam_head(d, cx, cy, k, c, w):
+    """Moving head med rundt LED-ansikt (à la LEDBeam 350), sett forfra: 7 LED-er i sekskant."""
+    _yoke(d, cx, cy, k, c, w, arm_top=cy - 2 * k, base_y=cy + 20 * k)
+    r = 16 * k
+    d.ellipse((cx - r, cy - 4 * k - r, cx + r, cy - 4 * k + r), fill=(35, 46, 61), outline=c, width=w)
+    led = 2.8 * k
+    pts = [(cx, cy - 4 * k)] + [(cx + 9 * k * math.cos(math.radians(a)), cy - 4 * k + 9 * k * math.sin(math.radians(a))) for a in range(0, 360, 60)]
+    for x, y in pts:
+        d.ellipse((x - led, y - led, x + led, y + led), fill=c)
+
+
+def g_par(d, cx, cy, k, c, w):
+    """PAR-kanne sett fra siden, vippet opp mot høyre, med bøyle under."""
+    ang = math.radians(-25)
+    body = ((-20, -11), (18, -16), (18, 16), (-20, 11))
+    pts = [(cx + dx * k * math.cos(ang) - dy * k * math.sin(ang), cy - 4 * k + dx * k * math.sin(ang) + dy * k * math.cos(ang)) for dx, dy in body]
+    d.polygon(pts, fill=(35, 46, 61), outline=c, width=w)
+    d.line((pts[1], pts[2]), fill=c, width=w + int(2 * k))  # frontlinje (bred ende)
+    d.arc((cx - 14 * k, cy + 4 * k, cx + 14 * k, cy + 26 * k), start=25, end=155, fill=c, width=w)  # bøyle
+
+
+def g_vintage_bowl(d, cx, cy, k, c, w):
+    """Vintage bowl: åpen skål med glødepære, sett fra siden."""
+    d.pieslice((cx - 20 * k, cy - 20 * k, cx + 20 * k, cy + 20 * k), start=0, end=180, fill=(35, 46, 61), outline=c, width=w)
+    d.line((cx - 20 * k, cy, cx + 20 * k, cy), fill=c, width=w)
+    d.ellipse((cx - 6 * k, cy - 12 * k, cx + 6 * k, cy), fill=(35, 46, 61), outline=c, width=w)
+    d.line((cx - 3 * k, cy - 6 * k, cx + 3 * k, cy - 6 * k), fill=c, width=int(w * 0.7))
+    d.line((cx, cy - 20 * k, cx, cy - 14 * k), fill=c, width=w)
+
+
+def g_led_bar(d, cx, cy, k, c, w):
+    """LED-bar: liggende stav med en rad LED-er og to små føtter."""
+    d.rounded_rectangle((cx - 24 * k, cy - 7 * k, cx + 24 * k, cy + 7 * k), radius=4 * k, outline=c, width=w)
+    led = 2.3 * k
+    for i in range(6):
+        x = cx - 19 * k + i * 7.6 * k
+        d.ellipse((x - led, cy - led, x + led, cy + led), fill=c)
+    for s in (-1, 1):
+        d.line((cx + s * 14 * k, cy + 7 * k, cx + s * 18 * k, cy + 16 * k), fill=c, width=w)
+
+
 ICON_SET = [("Folder", g_folder), ("Back", g_back), ("Groups", g_groups), ("Presets", g_presets), ("Light", g_light),
-            ("Sound", g_sound), ("Video", g_video), ("Play", g_play), ("Home", g_home), ("Star", g_star), ("Settings", g_gear)]
+            ("Sound", g_sound), ("Video", g_video), ("Play", g_play), ("Home", g_home), ("Star", g_star), ("Settings", g_gear),
+            ("Moving Head", g_moving_head), ("Beam Head", g_beam_head), ("PAR", g_par), ("Vintage Bowl", g_vintage_bowl), ("LED Bar", g_led_bar)]
 
 
 def icon_sheet(out, cyan=False):
