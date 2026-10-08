@@ -2,9 +2,11 @@
 	"$schema": "https://schemas.elgato.com/streamdeck/plugins/layout.json",
 	"id": "app.decksync.dial",
 	"items": [
-		{ "key": "r1", "type": "text", "rect": [8, 2, 184, 24], "font": { "size": 15, "weight": 600 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#ffffff", "value": "", "zOrder": 1 },
-		{ "key": "r2", "type": "text", "rect": [8, 26, 184, 24], "font": { "size": 15, "weight": 600 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#ffffff", "value": "", "zOrder": 1 },
-		{ "key": "r3", "type": "text", "rect": [8, 50, 184, 24], "font": { "size": 15, "weight": 600 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#ffffff", "value": "", "zOrder": 1 },
-		{ "key": "r4", "type": "text", "rect": [8, 74, 184, 24], "font": { "size": 15, "weight": 600 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#ffffff", "value": "", "zOrder": 1 }
+		{ "key": "icon", "type": "pixmap", "rect": [8, 3, 22, 22], "value": "imgs/badge.png", "zOrder": 1 },
+		{ "key": "r1", "type": "text", "rect": [36, 2, 156, 24], "font": { "size": 20, "weight": 700 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#26b8a8", "value": "", "zOrder": 1 },
+		{ "key": "line", "type": "bar", "rect": [8, 28, 184, 2], "subtype": 0, "range": { "min": 0, "max": 100 }, "value": 100, "bar_bg_c": "#26b8a8", "bar_fill_c": "#26b8a8", "border_w": 0, "zOrder": 1 },
+		{ "key": "r2", "type": "text", "rect": [8, 32, 184, 22], "font": { "size": 14, "weight": 400 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#ffffff", "value": "", "zOrder": 1 },
+		{ "key": "r3", "type": "text", "rect": [8, 54, 184, 22], "font": { "size": 14, "weight": 400 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#ffffff", "value": "", "zOrder": 1 },
+		{ "key": "r4", "type": "text", "rect": [8, 76, 184, 22], "font": { "size": 14, "weight": 400 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#ffffff", "value": "", "zOrder": 1 }
 	]
 }

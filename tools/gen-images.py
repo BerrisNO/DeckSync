@@ -78,13 +78,7 @@ def dial_key_image(size):
     k = S / 144
     img = Image.new("RGB", (S, S), (27, 34, 48))
     d = ImageDraw.Draw(img)
-    cx, cy, r = S / 2, S / 2, 30 * k
-    w = int(5 * k)
-    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=WHITE, width=w)
-    # viseren peker mot klokka ett, som på appens dial-ikon
-    a = math.radians(-55)
-    d.line((cx, cy, cx + r * 0.78 * math.cos(a), cy + r * 0.78 * math.sin(a)), fill=WHITE, width=w)
-    d.ellipse((cx - w * 0.9, cy - w * 0.9, cx + w * 0.9, cy + w * 0.9), fill=WHITE)
+    draw_sync_badge(d, S / 2, S / 2, 36 * k, S / 1024)  # produktikonet (synk-badgen), uten tekst
     return img.resize((size, size), Image.LANCZOS)
 
 

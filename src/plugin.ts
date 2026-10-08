@@ -633,10 +633,10 @@ function deckTag(d: DeviceLike, index: number): string {
 	return typeof custom === "string" && custom.trim() ? custom.trim() : `Deck${index + 1}`;
 }
 
-/** Én rad på stripen (layouts/dial.json har fire faste rader r1–r4; størrelse, farge og justering settes her). */
+/** Én tekstrad på stripen (layouts/dial.json: badge + overskrift r1, cyan linje, rader r2–r4; størrelse/farge settes her). */
 type StripRow = { value: string; font: { size: number; weight: number }; color: string; alignment: "left" | "right" };
-const row = (value: string, size: number, color = "#ffffff", weight = 600, alignment: "left" | "right" = "left"): StripRow => ({ value, font: { size, weight }, color, alignment });
-const EMPTY_ROW = row("", 15);
+const row = (value: string, size: number, color = "#ffffff", weight = 400, alignment: "left" | "right" = "left"): StripRow => ({ value, font: { size, weight }, color, alignment });
+const EMPTY_ROW = row("", 14);
 const DIM = "#7f8da0";
 const GREY = "#9fb3c8";
 const CYAN = "#26b8a8";
@@ -649,65 +649,56 @@ function deckLine(d: DeviceLike, index: number, page: number | undefined): strin
 	return `${deckTag(d, index)}: ${page ? `P${page}` : "–"}${title ? ` ${title}` : ""}`;
 }
 
-/** Status: én rad per deck (skriften krymper med antall), eller «ALL: P3 Tittel» når alle står likt. */
+/** Status: overskrift i cyan (ALL: P3, eller PAGES når deckene står ulikt) og én rad per deck under linjen. */
 function statusFeedback(): StripFeedback {
 	const out = emptyStrip();
 	const decks = syncable();
 	if (decks.length === 0) {
-		out.r2 = row("No decks", 16, GREY);
+		out.r1 = row("No decks", 20, GREY, 700);
 		return out;
 	}
 	const pages = decks.map((d) => currentPage.get(d.id));
 	const first = pages[0];
-	if (decks.length > 1 && first && pages.every((p) => p === first)) {
-		// Alle på samme side: «ALL: P3» øverst, så hvert decks egen sidebeskrivelse under («Deck1 - MA3 PROG»).
-		const info = decks.map((d, i) => {
+	const inSyncAll = decks.length > 1 && !!first && pages.every((p) => p === first);
+	let lines: string[];
+	if (inSyncAll) {
+		out.r1 = row(`ALL: P${first}`, 20, CYAN, 700);
+		lines = decks.map((d, i) => {
 			const title = pageNameFor(first, d);
 			return title ? `${deckTag(d, i)} - ${title}` : deckTag(d, i);
 		});
-		const size = decks.length <= 2 ? 15 : 13;
-		out.r1 = row(`ALL: P${first}`, decks.length <= 2 ? 20 : 18);
-		if (info.length <= 3) {
-			[out.r2, out.r3, out.r4] = [0, 1, 2].map((i) => (info[i] ? row(info[i]!, size, "#ffffff", 400) : EMPTY_ROW)) as [StripRow, StripRow, StripRow];
-		} else {
-			out.r2 = row(info[0]!, size, "#ffffff", 400);
-			out.r3 = row(info[1]!, size, "#ffffff", 400);
-			out.r4 = row(`+${info.length - 2} more`, size, DIM, 400);
-		}
-		return out;
-	}
-	const lines = decks.map((d, i) => deckLine(d, i, pages[i]));
-	if (lines.length === 1) {
-		out.r2 = row(lines[0]!, 18);
-	} else if (lines.length === 2) {
-		out.r2 = row(lines[0]!, 18);
-		out.r3 = row(lines[1]!, 18);
-	} else if (lines.length === 3) {
-		out.r1 = row(lines[0]!, 15);
-		out.r2 = row(lines[1]!, 15);
-		out.r3 = row(lines[2]!, 15);
+	} else if (decks.length === 1) {
+		out.r1 = row(`P${first ?? "–"}`, 20, CYAN, 700);
+		const title = first ? pageNameFor(first, decks[0]!) : undefined;
+		lines = [title ? `${deckTag(decks[0]!, 0)} - ${title}` : deckTag(decks[0]!, 0)];
 	} else {
-		out.r1 = row(lines[0]!, 13);
-		out.r2 = row(lines[1]!, 13);
-		out.r3 = row(lines[2]!, 13);
-		out.r4 = row(lines.length === 4 ? lines[3]! : `+${lines.length - 3} more`, 13, lines.length === 4 ? "#ffffff" : DIM);
+		out.r1 = row("PAGES", 20, GREY, 700);
+		lines = decks.map((d, i) => deckLine(d, i, pages[i]));
+	}
+	const size = lines.length <= 2 ? 15 : 13;
+	if (lines.length <= 3) {
+		[out.r2, out.r3, out.r4] = [0, 1, 2].map((i) => (lines[i] ? row(lines[i]!, size) : EMPTY_ROW)) as [StripRow, StripRow, StripRow];
+	} else {
+		out.r2 = row(lines[0]!, size);
+		out.r3 = row(lines[1]!, size);
+		out.r4 = row(`+${lines.length - 2} more`, size, DIM);
 	}
 	return out;
 }
 
-/** Valget mens man vrir/holder: målet oppe til høyre, «→ P4» stort i cyan, tittelen under. */
+/** Valget mens man vrir/holder: «→ P4» i cyan som overskrift, tittel og mål under. */
 function selectionFeedback(): StripFeedback {
 	const out = emptyStrip();
-	out.r1 = row(targetLabel(), 13, GREY, 600, "right");
 	if (holding) {
-		out.r2 = row("turn:", 22, CYAN, 700);
-		out.r3 = row("pick deck", 15, "#ffffff", 400);
+		out.r1 = row("TURN: DECK", 20, CYAN, 700);
+		out.r2 = row(`target: ${targetLabel()}`, 15);
 		return out;
 	}
 	const targetDevice = target === "all" ? undefined : streamDeck.devices.getDeviceById(target);
 	const name = targetDevice ? pageNameFor(dialPage, targetDevice) : pageNameAll(dialPage);
-	out.r2 = row(`→ P${dialPage}`, 22, CYAN, 700);
-	out.r3 = row(name ?? "", 15, "#ffffff", 400);
+	out.r1 = row(`→ P${dialPage}`, 20, CYAN, 700);
+	out.r2 = row(name ?? "", 15);
+	out.r3 = row(`target: ${targetLabel()}`, 13, GREY);
 	return out;
 }
 
