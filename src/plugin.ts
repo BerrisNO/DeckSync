@@ -660,18 +660,20 @@ function statusFeedback(): StripFeedback {
 	const pages = decks.map((d) => currentPage.get(d.id));
 	const first = pages[0];
 	if (decks.length > 1 && first && pages.every((p) => p === first)) {
-		const titles = decks.map((d) => pageNameFor(first, d));
-		const known = titles.filter((t): t is string => !!t);
-		const same = known.length > 0 && known.every((t) => t === known[0]);
-		out.r2 = row(`ALL: P${first}${same ? ` ${known[0]}` : ""}`, 20);
-		out.r3 = row(
-			same || known.length === 0
-				? `${decks.map((d, i) => deckTag(d, i)).join(" · ")} in sync`
-				: decks.map((d, i) => (titles[i] ? `${deckTag(d, i)}: ${titles[i]}` : "")).filter(Boolean).join(" · "),
-			13,
-			DIM,
-			400,
-		);
+		// Alle på samme side: «ALL: P3» øverst, så hvert decks egen sidebeskrivelse under («Deck1 - MA3 PROG»).
+		const info = decks.map((d, i) => {
+			const title = pageNameFor(first, d);
+			return title ? `${deckTag(d, i)} - ${title}` : deckTag(d, i);
+		});
+		const size = decks.length <= 2 ? 15 : 13;
+		out.r1 = row(`ALL: P${first}`, decks.length <= 2 ? 20 : 18);
+		if (info.length <= 3) {
+			[out.r2, out.r3, out.r4] = [0, 1, 2].map((i) => (info[i] ? row(info[i]!, size, "#ffffff", 400) : EMPTY_ROW)) as [StripRow, StripRow, StripRow];
+		} else {
+			out.r2 = row(info[0]!, size, "#ffffff", 400);
+			out.r3 = row(info[1]!, size, "#ffffff", 400);
+			out.r4 = row(`+${info.length - 2} more`, size, DIM, 400);
+		}
 		return out;
 	}
 	const lines = decks.map((d, i) => deckLine(d, i, pages[i]));
