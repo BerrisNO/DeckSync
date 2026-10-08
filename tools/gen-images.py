@@ -334,7 +334,9 @@ def colored_tile(size, color, draw_glyph=None):
     k = S / 144
     img = Image.new("RGB", (S, S), (16, 21, 28))
     d = ImageDraw.Draw(img)
-    edge = tuple(min(255, int(ch * 0.75 + 255 * 0.25)) for ch in color)
+    # dempet: fargen blandes mot den mørke flisen (#232E3D), så den sitter roligere i rekka med de andre tastene
+    color = tuple(int(ch * 0.62 + base * 0.38) for ch, base in zip(color, (35, 46, 61)))
+    edge = tuple(min(255, int(ch * 0.8 + 255 * 0.2)) for ch in color)
     d.rounded_rectangle((6 * k, 6 * k, 138 * k, 138 * k), radius=14 * k, fill=color, outline=edge, width=int(3 * k))
     if draw_glyph:
         lum = (0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]) / 255
