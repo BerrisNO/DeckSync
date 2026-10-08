@@ -151,6 +151,114 @@ def back_icon(size):
     return img.resize((size, size), Image.LANCZOS)
 
 
+def glyph_tile(size, draw_glyph, color=WHITE):
+    """Flis med en liten, tynn strekglyf øverst (ca. 40 px i 144-skala) og plass til tittel nederst."""
+    S = 576
+    img, d, k = tile_base(S)
+    draw_glyph(d, 72 * k, 58 * k, k, color, int(4 * k))
+    return img.resize((size, size), Image.LANCZOS)
+
+
+def g_folder(d, cx, cy, k, c, w):
+    x0, y0, x1, y1 = cx - 22 * k, cy - 14 * k, cx + 22 * k, cy + 15 * k
+    d.rounded_rectangle((x0, y0 + 7 * k, x1, y1), radius=5 * k, outline=c, width=w)
+    d.rounded_rectangle((x0, y0, x0 + 18 * k, y0 + 7 * k + w), radius=4 * k, outline=c, width=w)
+    d.rectangle((x0 + w, y0 + 7 * k, x0 + 18 * k - w, y0 + 7 * k + w * 1.6), fill=(35, 46, 61))
+
+
+def g_back(d, cx, cy, k, c, w):
+    d.line((cx - 18 * k, cy, cx + 18 * k, cy), fill=c, width=w)
+    d.line((cx - 18 * k, cy, cx - 5 * k, cy - 13 * k), fill=c, width=w)
+    d.line((cx - 18 * k, cy, cx - 5 * k, cy + 13 * k), fill=c, width=w)
+
+
+def g_groups(d, cx, cy, k, c, w):
+    s, g = 15 * k, 5 * k
+    for dx in (-1, 1):
+        for dy in (-1, 1):
+            x = cx + dx * (s / 2 + g / 2) - s / 2
+            y = cy + dy * (s / 2 + g / 2) - s / 2
+            d.rounded_rectangle((x, y, x + s, y + s), radius=3 * k, outline=c, width=w)
+
+
+def g_presets(d, cx, cy, k, c, w):
+    for i, pos in enumerate((-0.6, 0.1, -0.3)):
+        x = cx + (i - 1) * 14 * k
+        d.line((x, cy - 18 * k, x, cy + 18 * k), fill=c, width=w)
+        y = cy + pos * 14 * k
+        d.ellipse((x - 5 * k, y - 5 * k, x + 5 * k, y + 5 * k), fill=(35, 46, 61), outline=c, width=w)
+
+
+def g_light(d, cx, cy, k, c, w):
+    r = 13 * k
+    d.arc((cx - r, cy - 17 * k, cx + r, cy + 9 * k), start=150, end=390, fill=c, width=w)
+    d.line((cx - 7 * k, cy + 4 * k, cx - 7 * k, cy + 13 * k), fill=c, width=w)
+    d.line((cx + 7 * k, cy + 4 * k, cx + 7 * k, cy + 13 * k), fill=c, width=w)
+    d.line((cx - 7 * k, cy + 13 * k, cx + 7 * k, cy + 13 * k), fill=c, width=w)
+    d.line((cx - 5 * k, cy + 19 * k, cx + 5 * k, cy + 19 * k), fill=c, width=w)
+
+
+def g_sound(d, cx, cy, k, c, w):
+    d.polygon([(cx - 18 * k, cy - 7 * k), (cx - 9 * k, cy - 7 * k), (cx + 1 * k, cy - 15 * k), (cx + 1 * k, cy + 15 * k), (cx - 9 * k, cy + 7 * k), (cx - 18 * k, cy + 7 * k)], outline=c, width=w)
+    d.arc((cx - 4 * k, cy - 11 * k, cx + 14 * k, cy + 11 * k), start=-45, end=45, fill=c, width=w)
+    d.arc((cx - 2 * k, cy - 18 * k, cx + 22 * k, cy + 18 * k), start=-45, end=45, fill=c, width=w)
+
+
+def g_video(d, cx, cy, k, c, w):
+    d.rounded_rectangle((cx - 20 * k, cy - 12 * k, cx + 8 * k, cy + 12 * k), radius=4 * k, outline=c, width=w)
+    d.polygon([(cx + 8 * k, cy - 4 * k), (cx + 20 * k, cy - 11 * k), (cx + 20 * k, cy + 11 * k), (cx + 8 * k, cy + 4 * k)], outline=c, width=w)
+
+
+def g_play(d, cx, cy, k, c, w):
+    d.polygon([(cx - 12 * k, cy - 16 * k), (cx + 16 * k, cy), (cx - 12 * k, cy + 16 * k)], outline=c, width=w)
+
+
+def g_home(d, cx, cy, k, c, w):
+    d.line((cx - 20 * k, cy - 1 * k, cx, cy - 17 * k), fill=c, width=w)
+    d.line((cx, cy - 17 * k, cx + 20 * k, cy - 1 * k), fill=c, width=w)
+    d.rounded_rectangle((cx - 14 * k, cy - 4 * k, cx + 14 * k, cy + 16 * k), radius=2 * k, outline=c, width=w)
+    d.rectangle((cx - 4 * k, cy + 5 * k, cx + 4 * k, cy + 16 * k), outline=c, width=w)
+
+
+def g_star(d, cx, cy, k, c, w):
+    pts = []
+    for i in range(10):
+        a = math.radians(-90 + i * 36)
+        r = 17 * k if i % 2 == 0 else 7.5 * k
+        pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+    d.polygon(pts, outline=c, width=w)
+
+
+def g_gear(d, cx, cy, k, c, w):
+    r = 12 * k
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=c, width=w)
+    d.ellipse((cx - 4 * k, cy - 4 * k, cx + 4 * k, cy + 4 * k), outline=c, width=w)
+    for i in range(8):
+        a = math.radians(i * 45)
+        d.line((cx + (r + 1 * k) * math.cos(a), cy + (r + 1 * k) * math.sin(a), cx + (r + 7 * k) * math.cos(a), cy + (r + 7 * k) * math.sin(a)), fill=c, width=w + int(k))
+
+
+ICON_SET = [("Folder", g_folder), ("Back", g_back), ("Groups", g_groups), ("Presets", g_presets), ("Light", g_light),
+            ("Sound", g_sound), ("Video", g_video), ("Play", g_play), ("Home", g_home), ("Star", g_star), ("Settings", g_gear)]
+
+
+def icon_sheet(out, cyan=False):
+    """Kontaktark: alle ikonene i 144 px ved siden av hverandre, med navn under."""
+    cols = 6
+    cell, pad = 144, 24
+    rows = (len(ICON_SET) + cols - 1) // cols
+    sheet = Image.new("RGB", (cols * (cell + pad) + pad, rows * (cell + pad + 28) + pad), (43, 43, 43))
+    d = ImageDraw.Draw(sheet)
+    f = font("segoeui.ttf", 16)
+    for i, (name, glyph) in enumerate(ICON_SET):
+        x = pad + (i % cols) * (cell + pad)
+        y = pad + (i // cols) * (cell + pad + 28)
+        sheet.paste(glyph_tile(cell, glyph, CYAN if cyan else WHITE), (x, y))
+        tw = d.textlength(name, font=f)
+        d.text((x + (cell - tw) / 2, y + cell + 4), name, font=f, fill=(220, 220, 220))
+    sheet.save(out)
+
+
 def font(name, px):
     return ImageFont.truetype(os.path.join(FONTS, name), px)
 
@@ -221,6 +329,10 @@ def main():
     ICONS = os.path.join(ROOT, "icons")
     os.makedirs(ICONS, exist_ok=True)
     tile_base(576)[0].resize((144, 144), Image.LANCZOS).save(os.path.join(ICONS, "DeckSync Tile.png"))  # bare flisen, til egne taster og mapper
+    for name, glyph in ICON_SET:
+        glyph_tile(144, glyph).save(os.path.join(ICONS, f"DeckSync {name}.png"))
+    icon_sheet(os.path.join(ROOT, "notes", "mock", "icon-sheet.png"))
+    icon_sheet(os.path.join(ROOT, "notes", "mock", "icon-sheet-cyan.png"), cyan=True)
 
     slide(
         "Keep every Stream Deck on the same page",
