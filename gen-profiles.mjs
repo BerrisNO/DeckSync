@@ -1,5 +1,6 @@
 // Genererer én DeckSync-profil per enhetstype (zip med JSON, samme struktur som appens egne eksporter),
-// med sidemarkør på hver side, Neste/Forrige side-knapper og sidehjul på dial 1 der enheten har dialer.
+// med sidemarkør øverst til høyre på hver side og sidehjul på siste dial der enheten har dialer.
+// Ingen Neste/Forrige-taster: sidene byttes med sidehjulet, Go to page eller indikatoren.
 // Skriver også Profiles-blokken i manifestet, så manifest og filer alltid stemmer overens.
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -34,7 +35,6 @@ export function generateProfiles() {
 	const manifestPath = `${PLUGIN_DIR}/manifest.json`;
 	const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
 	const ownPlugin = { Name: manifest.Name, UUID: PLUGIN_UUID, Version: manifest.Version };
-	const pagesPlugin = { Name: "Pages", UUID: "com.elgato.streamdeck.page", Version: "1.0" };
 
 	mkdirSync(`${PLUGIN_DIR}/profiles`, { recursive: true });
 	const profiles = [];
@@ -56,19 +56,12 @@ export function generateProfiles() {
 
 		pageIds.forEach((pageId, i) => {
 			const page = i + 1;
-			const bottom = d.rows - 1;
 			const keys = {
-				"0,0": actionEntry(MARKER_UUID, "Page marker", ownPlugin, { page, showLabel: true }, `marker/${d.type}/${page}`),
+				[`${d.columns - 1},0`]: actionEntry(MARKER_UUID, "Page marker", ownPlugin, { page, showLabel: true }, `marker/${d.type}/${page}`),
 			};
-			if (page > 1) {
-				keys[`0,${bottom}`] = actionEntry("com.elgato.streamdeck.page.previous", "Previous Page", pagesPlugin, {}, `prev/${d.type}/${page}`);
-			}
-			if (page < config.pages) {
-				keys[`${d.columns - 1},${bottom}`] = actionEntry("com.elgato.streamdeck.page.next", "Next Page", pagesPlugin, {}, `next/${d.type}/${page}`);
-			}
 			const controllers = [{ Actions: keys, Type: "Keypad" }];
 			if (d.dials > 0) {
-				controllers.push({ Actions: { "0,0": actionEntry(DIAL_UUID, "Page dial", ownPlugin, {}, `dial/${d.type}/${page}`) }, Type: "Encoder" });
+				controllers.push({ Actions: { [`${d.dials - 1},0`]: actionEntry(DIAL_UUID, "Page dial", ownPlugin, {}, `dial/${d.type}/${page}`) }, Type: "Encoder" });
 			}
 			files[`${root}/Profiles/${pageId.toUpperCase()}/manifest.json`] = strToU8(JSON.stringify({ Controllers: controllers, Icon: "", Name: "" }));
 		});

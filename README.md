@@ -14,7 +14,7 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 - **Page dial** (Stream Deck +). Turn to pick a page, press to go there, hold and turn to choose the target (ALL decks or a single one). The touch strip shows the page name and `p3 → ALL`.
 - **Target key.** The same target switch on an ordinary key.
 - **Deck names.** Call your decks "Lights" and "Sound" instead of "Module 15" and "+".
-- **Page names.** Name the pages in the Stream Deck app and DeckSync shows them: on the page marker ("Programming" over "p3"), on the dial ("Programming · p3 → Lights") and in the Go to page list.
+- **Page names and icons.** Name the pages and give them icons in the Stream Deck app, and DeckSync shows them everywhere: on the page marker (icon with the name underneath and "p3" in the corner), on the dial ("ALL: P3 Programming") and in the Go to page lists. Naming your pages is the single most useful setup step.
 - **Zero setup.** DeckSync ships a ready profile for every supported device type and installs it the first time a deck is seen.
 
 ## Supported devices
@@ -24,14 +24,14 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 | Stream Deck (MK.2, Scissor Keys, Module 15) | 5 × 3 | |
 | Stream Deck Mini | 3 × 2 | |
 | Stream Deck XL | 8 × 4 | |
-| Stream Deck + | 4 × 2 + 4 dials | Page dial pre-placed on dial 1 of every page |
+| Stream Deck + | 4 × 2 + 4 dials | Page dial pre-placed on dial 4 of every page |
 | Stream Deck Neo | 4 × 2 | |
 
 Requires the Stream Deck app 7.1 or newer on Windows 10+ or macOS 12+.
 
 ## How it works
 
-The Stream Deck app does not tell plugins when a page changes, and plugins can only switch a device to profiles bundled with the plugin. DeckSync therefore brings its own profile per device type (`DeckSync 15`, `DeckSync Plus`, …), ten pages each, with a **page marker** in the top-left key of every page and Next/Previous page keys in the bottom corners.
+The Stream Deck app does not tell plugins when a page changes, and plugins can only switch a device to profiles bundled with the plugin. DeckSync therefore brings its own profile per device type (`DeckSync 15`, `DeckSync Plus`, …), ten pages each, with a **page marker** in the top-right key of every page. There are no Next/Previous keys: pages are changed with the page dial, Go to page keys or the Page indicator, and the markers keep the decks in step.
 
 When a marker becomes visible, DeckSync knows which page that deck is showing and moves the other decks to the same page. Switches that DeckSync itself requested are recognised as echoes and never trigger another switch.
 
@@ -50,7 +50,7 @@ When a marker becomes visible, DeckSync knows which page that deck is showing an
 
 **After the install**
 
-- Connect your Stream Decks. The first time DeckSync sees a deck, it switches that deck once to its DeckSync profile (`DeckSync 15`, `DeckSync Plus`, …). The app installs that profile with a page marker on every page, Next/Previous keys in the bottom corners and, on Stream Deck +, the page dial on dial 1.
+- Connect your Stream Decks. The first time DeckSync sees a deck, it switches that deck once to its DeckSync profile (`DeckSync 15`, `DeckSync Plus`, …). The app installs that profile with a page marker in the top-right key of every page and, on Stream Deck +, the page dial on dial 4.
 - Nothing else changes. Your existing profiles are untouched, and DeckSync only ever switches to its own profiles.
 
 **Uninstall**
@@ -60,8 +60,8 @@ Right-click DeckSync in the actions list and choose Uninstall. The DeckSync prof
 ## Getting started
 
 1. Build your pages inside the DeckSync profiles. Keep the page marker on each page; you can move it to any key.
-2. Name the pages in the Stream Deck app. The markers, the dial and Go to page pick the names up.
-3. Turn pages with the Next/Previous keys on any deck. The other decks follow.
+2. **Name the pages and give them icons.** This is what makes DeckSync readable: in the Stream Deck app, right-click a page number in the page bar of a DeckSync profile and set a name and an icon. The page markers then show the icon with the name underneath, the page dial reads "ALL: P3 Lights" instead of just "P3", and the Go to page lists show names instead of numbers. Do it on every deck, since each deck has its own profile and its own page names. Unnamed pages show only "p3" and a default icon.
+3. Change page on any deck, with the page dial, a Go to page key or the app's own Next/Previous page actions if you add them. The other decks follow.
 4. Want a deck on a different page? Use a Go to page key, or the page dial on Stream Deck +.
 
 ## Actions

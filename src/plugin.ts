@@ -853,8 +853,12 @@ streamDeck.settings.onDidReceiveGlobalSettings<GlobalSettings>((ev) => {
  * ("Another operation is already in progress"). Vi venter på markør-ekkoet fra side 1 før neste enhet.
  */
 let installChain: Promise<void> = Promise.resolve();
+/** Appen starter pluginen før profilsystemet sitt er klart; en import som sendes da låser appens importkø. Vent derfor litt. */
+const PLUGIN_STARTED_AT = Date.now();
+const FIRST_INSTALL_DELAY_MS = 15000;
 function queueFirstInstall(d: DeviceLike): void {
 	installChain = installChain.then(async () => {
+		await new Promise((r) => setTimeout(r, Math.max(0, PLUGIN_STARTED_AT + FIRST_INSTALL_DELAY_MS - Date.now())));
 		await jumpTo(d, 1, "first-run install");
 		const deadline = Date.now() + 15000;
 		while (pendingEcho.has(d.id) && Date.now() < deadline) await new Promise((r) => setTimeout(r, 250));
