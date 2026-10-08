@@ -43,7 +43,7 @@ const PAGES: number = config.pages;
 /** Profil per enhetstype. Generert av gen-profiles.mjs fra decksync.config.json. */
 const PROFILE_BY_TYPE = new Map<number, string>(config.devices.map((d) => [d.type, `profiles/${d.name}`]));
 
-/** Siste kjente side per enhet (1-basert). Fjernes når markøren forsvinner. */
+/** Siste kjente side per enhet (1-basert). Beholdes når markøren forsvinner (mapper), fjernes ved frakobling. */
 const currentPage = new Map<string, number>();
 /** Sidebytter vi selv har bedt om, slik at vi ikke svarer på vårt eget ekko. */
 const pendingEcho = new Map<string, { page: number; until: number }>();
@@ -246,12 +246,12 @@ class PageMarker extends SingletonAction<MarkerSettings> {
 		void refreshIndicators();
 	}
 
-	override onWillDisappear(ev: WillDisappearEvent<MarkerSettings>): void {
-		const deviceId = ev.action.device.id;
-		if (currentPage.get(deviceId) === toInt(ev.payload.settings.page, 1)) {
-			currentPage.delete(deviceId);
-			void refreshIndicators();
-		}
+	/**
+	 * Markøren forsvinner også når decket går inn i en mappe på siden. Da husker vi siste kjente side,
+	 * så stripen og synk-firkanten holder seg; en ny markør (annen side) eller frakobling erstatter den.
+	 */
+	override onWillDisappear(_ev: WillDisappearEvent<MarkerSettings>): void {
+		/* beholder currentPage med vilje */
 	}
 
 	/** Trykk på markøren tvinger en ny synk (nyttig hvis noe har kommet i utakt). */
@@ -888,7 +888,9 @@ streamDeck.devices.onDeviceDidConnect(async (ev) => {
 	if (profile && !installed.includes(d.id)) queueFirstInstall(d);
 });
 
-streamDeck.devices.onDeviceDidDisconnect(async () => {
+streamDeck.devices.onDeviceDidDisconnect(async (ev) => {
+	currentPage.delete(ev.device.id);
+	pendingEcho.delete(ev.device.id);
 	if (target !== "all" && !syncable().some((d) => d.id === target)) target = "all";
 	void saveGlobals();
 	await refreshAll();

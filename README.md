@@ -94,6 +94,12 @@ Open the settings of any Page dial or Target key. One text field per connected d
 ### Page names
 Pages are named in the Stream Deck app, in the DeckSync profile of each deck. DeckSync reads those names from the app's profile files and updates the markers, the dial and the Go to page lists within a second. With target ALL, the dial shows a page name when every deck agrees on it, otherwise "Page 3".
 
+## Folders
+
+Need more keys on a page than a deck has? Use the Stream Deck app's own folders. Put a folder on the page, and fill it with as many keys and pages as you like. DeckSync syncs at page level, so the other decks stay where they are while you work inside a folder, and if another deck turns the page, this deck leaves the folder and follows. The strip and the sync square keep showing the last known page while a deck is inside a folder.
+
+Matching key images for folder keys and their Back key are in the [icons](icons) folder: `DeckSync Folder.png` and `DeckSync Back.png`. Set them on the key in the Stream Deck app with "Set from file".
+
 ## Tips and limitations
 
 - Follow mode needs a marker on every page. Delete a marker and that page stops announcing itself.

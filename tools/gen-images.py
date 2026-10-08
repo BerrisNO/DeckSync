@@ -115,6 +115,42 @@ def key_image(size):
     return img.resize((size, size), Image.LANCZOS)
 
 
+def tile_base(S):
+    """Mørk flis med kant, som tastene: #10151C bakgrunn, #232E3D flis, #3A4657 kant."""
+    k = S / 144
+    img = Image.new("RGB", (S, S), (16, 21, 28))
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle((6 * k, 6 * k, 138 * k, 138 * k), radius=14 * k, fill=(35, 46, 61), outline=(58, 70, 87), width=int(3 * k))
+    return img, d, k
+
+
+def folder_icon(size):
+    """Mappe-tast: mappeglyf i hvit strek øverst, plass til appens tittel nederst."""
+    S = 576
+    img, d, k = tile_base(S)
+    w = int(5 * k)
+    x0, y0, x1, y1 = 34 * k, 40 * k, 110 * k, 94 * k
+    tab_w, tab_h = 28 * k, 10 * k
+    # tab + kropp som én kontur
+    d.rounded_rectangle((x0, y0 + tab_h, x1, y1), radius=7 * k, outline=WHITE, width=w)
+    d.rounded_rectangle((x0, y0, x0 + tab_w, y0 + tab_h + w * 1.5), radius=5 * k, outline=WHITE, width=w)
+    d.rectangle((x0 + w, y0 + tab_h, x0 + tab_w - w, y0 + tab_h + w * 2.2), fill=(35, 46, 61))  # åpner tappen mot kroppen
+    return img.resize((size, size), Image.LANCZOS)
+
+
+def back_icon(size):
+    """Tilbake-tast for mapper: pil til venstre i samme strek."""
+    S = 576
+    img, d, k = tile_base(S)
+    w = int(6 * k)
+    cx, cy = 72 * k, 66 * k
+    d.line((cx - 26 * k, cy, cx + 26 * k, cy), fill=WHITE, width=w)
+    d.line((cx - 26 * k, cy, cx - 6 * k, cy - 20 * k), fill=WHITE, width=w)
+    d.line((cx - 26 * k, cy, cx - 6 * k, cy + 20 * k), fill=WHITE, width=w)
+    d.ellipse((cx - 26 * k - w / 2, cy - w / 2, cx - 26 * k + w / 2, cy + w / 2), fill=WHITE)
+    return img.resize((size, size), Image.LANCZOS)
+
+
 def font(name, px):
     return ImageFont.truetype(os.path.join(FONTS, name), px)
 
@@ -182,6 +218,10 @@ def main():
     badge_only(56).save(os.path.join(IMGS, "badge.png"))
     badge_only(112).save(os.path.join(IMGS, "badge@2x.png"))
     plugin_icon(1024).save(os.path.join(MARKET, "app-icon-1024.png"))
+    ICONS = os.path.join(ROOT, "icons")
+    os.makedirs(ICONS, exist_ok=True)
+    folder_icon(144).save(os.path.join(ICONS, "DeckSync Folder.png"))
+    back_icon(144).save(os.path.join(ICONS, "DeckSync Back.png"))
 
     slide(
         "Keep every Stream Deck on the same page",
