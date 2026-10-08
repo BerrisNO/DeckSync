@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "validate": "streamdeck validate no.berland.decksync.sdPlugin",
-    "pack": "node build.mjs && streamdeck pack no.berland.decksync.sdPlugin --output dist --force",
+    "validate": "streamdeck validate app.decksync.sdPlugin",
+    "pack": "node build.mjs && streamdeck pack app.decksync.sdPlugin --output dist --force",
     "test": "esbuild test/run.ts --bundle --platform=node --format=esm --target=node20 --alias:@elgato/streamdeck=./test/fake.ts --outfile=test/out.mjs --log-level=error && node test/out.mjs",
     "images": "python -I tools/gen-images.py"
   },

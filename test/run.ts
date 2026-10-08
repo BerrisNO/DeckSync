@@ -1,6 +1,6 @@
 import "../src/plugin";
 import { calls, registry } from "./fake";
-const m = registry["no.berland.decksync.marker"]; const g = registry["no.berland.decksync.goto"];
+const m = registry["app.decksync.marker"]; const g = registry["app.decksync.goto"];
 const ev = (dev: string, page: number, target?: number) => ({ action: { device: { id: dev }, setTitle: async () => {}, isKey: () => true, showOk: async () => {} }, payload: { settings: { page, target } } });
 const log = (s: string) => console.log(s.padEnd(34), JSON.stringify(calls.splice(0)));
 await m.onWillAppear(ev("A", 1)); log("A appears p1");
@@ -15,7 +15,7 @@ await g.onKeyDown(gev("B", { sd15: 2, plus: "" })); log("goto 15->2, + urort");
 await g.onKeyDown(gev("B", { sd15: 2, plus: 2 })); log("goto begge -> 2");
 m.onWillDisappear(ev("A", 4)); await m.onWillAppear(ev("A", 2)); log("A echo p2 (none)");
 m.onWillDisappear(ev("B", 1)); await m.onWillAppear(ev("B", 2)); log("B echo p2 (none)");
-const d = registry["no.berland.decksync.dial"];
+const d = registry["app.decksync.dial"];
 const dev = (id: string, p: any) => ({ action: { device: { id }, isDial: () => false, isKey: () => false }, payload: p });
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 await d.onDialRotate(dev("B", { ticks: 2 })); await wait(100); log("hjul +2 -> side 3 valgt, ingen sending");

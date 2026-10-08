@@ -5,8 +5,8 @@ import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { strToU8, zipSync } from "fflate";
 
-const PLUGIN_DIR = "no.berland.decksync.sdPlugin";
-const PLUGIN_UUID = "no.berland.decksync";
+const PLUGIN_DIR = "app.decksync.sdPlugin";
+const PLUGIN_UUID = "app.decksync";
 const MARKER_UUID = `${PLUGIN_UUID}.marker`;
 const DIAL_UUID = `${PLUGIN_UUID}.dial`;
 const NO_PAGE = "00000000-0000-0000-0000-000000000000";

@@ -19,7 +19,7 @@ import { join } from "node:path";
 import config from "../decksync.config.json";
 
 /** Egen UUID (manifestet skal ikke leses ved kjøretid). */
-const PLUGIN_UUID = "no.berland.decksync";
+const PLUGIN_UUID = "app.decksync";
 
 type JsonObject = Parameters<typeof streamDeck.settings.setGlobalSettings>[0];
 type JsonValue = JsonObject[string];
@@ -220,7 +220,7 @@ async function showLabel(a: Action<MarkerSettings>, settings: MarkerSettings): P
 	}
 }
 
-@action({ UUID: "no.berland.decksync.marker" })
+@action({ UUID: "app.decksync.marker" })
 class PageMarker extends SingletonAction<MarkerSettings> {
 	override async onWillAppear(ev: WillAppearEvent<MarkerSettings>): Promise<void> {
 		const settings = ev.payload.settings;
@@ -298,7 +298,7 @@ async function gotoPages(settings: GotoSettings): Promise<void> {
 	}
 }
 
-@action({ UUID: "no.berland.decksync.goto" })
+@action({ UUID: "app.decksync.goto" })
 class GotoPage extends SingletonAction<GotoSettings> {
 	override async onKeyDown(ev: KeyDownEvent<GotoSettings>): Promise<void> {
 		await gotoPages(ev.payload.settings);
@@ -369,7 +369,7 @@ async function refreshIndicators(): Promise<void> {
 	for (const a of pageDial.actions) if (a.isDial()) await refreshDial(a);
 }
 
-@action({ UUID: "no.berland.decksync.indicator" })
+@action({ UUID: "app.decksync.indicator" })
 class PageIndicator extends SingletonAction<IndicatorSettings> {
 	override async onWillAppear(ev: WillAppearEvent<IndicatorSettings>): Promise<void> {
 		await renderIndicator(ev.action, ev.payload.settings);
@@ -763,7 +763,7 @@ let holdConsumed = false;
  * Sidehjul: vri = velg side (sender ikke), kort trykk = gå til siden,
  * hold + vri = velg mål (ALL → deck 1 → deck 2 → …, begge veier). Hold alene gjør ingenting. Touch-feltet sender.
  */
-@action({ UUID: "no.berland.decksync.dial" })
+@action({ UUID: "app.decksync.dial" })
 class PageDial extends SingletonAction {
 	override async onWillAppear(ev: WillAppearEvent): Promise<void> {
 		if (ev.action.isDial()) await refreshDial(ev.action);
@@ -807,7 +807,7 @@ class PageDial extends SingletonAction {
 	}
 }
 
-@action({ UUID: "no.berland.decksync.target" })
+@action({ UUID: "app.decksync.target" })
 class TargetKey extends SingletonAction {
 	override async onWillAppear(ev: WillAppearEvent): Promise<void> {
 		await renderTargetKey(ev.action);

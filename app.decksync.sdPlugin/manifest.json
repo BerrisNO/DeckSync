@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
-	"UUID": "no.berland.decksync",
+	"UUID": "app.decksync",
 	"Name": "DeckSync",
 	"Version": "0.3.0.0",
 	"Author": "Berris",
@@ -67,7 +67,7 @@
 	"Actions": [
 		{
 			"Name": "Page marker",
-			"UUID": "no.berland.decksync.marker",
+			"UUID": "app.decksync.marker",
 			"Icon": "imgs/marker",
 			"Tooltip": "One per page, pre-installed in the DeckSync profiles. When the page appears, the other decks follow. Press to resync.",
 			"PropertyInspectorPath": "ui/marker.html",
@@ -91,7 +91,7 @@
 		},
 		{
 			"Name": "Page indicator",
-			"UUID": "no.berland.decksync.indicator",
+			"UUID": "app.decksync.indicator",
 			"Icon": "imgs/indicator",
 			"Tooltip": "Shows which page a deck is on, in the same style as the page marker. Press: take this deck to that page (or resync when it shows its own deck).",
 			"PropertyInspectorPath": "ui/indicator.html",
@@ -108,7 +108,7 @@
 		},
 		{
 			"Name": "Go to page",
-			"UUID": "no.berland.decksync.goto",
+			"UUID": "app.decksync.goto",
 			"Icon": "imgs/goto",
 			"Tooltip": "Press: send each deck to the page you set. Empty field = that deck stays put.",
 			"PropertyInspectorPath": "ui/goto.html",
@@ -133,7 +133,7 @@
 		},
 		{
 			"Name": "Page dial",
-			"UUID": "no.berland.decksync.dial",
+			"UUID": "app.decksync.dial",
 			"Icon": "imgs/dial",
 			"Tooltip": "Turn: pick a page. Press: go there. Hold and turn: pick the target deck (ALL or one). Touch: go there. The target is shared with the Target key.",
 			"PropertyInspectorPath": "ui/names.html",
@@ -156,7 +156,7 @@
 		},
 		{
 			"Name": "Target",
-			"UUID": "no.berland.decksync.target",
+			"UUID": "app.decksync.target",
 			"Icon": "imgs/target",
 			"Tooltip": "Press: choose which decks the page dial controls (ALL or one deck).",
 			"PropertyInspectorPath": "ui/names.html",

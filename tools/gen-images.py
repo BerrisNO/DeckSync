@@ -6,7 +6,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-IMGS = os.path.join(ROOT, "no.berland.decksync.sdPlugin", "imgs")
+IMGS = os.path.join(ROOT, "app.decksync.sdPlugin", "imgs")
 MARKET = os.path.join(ROOT, "marketplace")
 FONTS = r"C:\Windows\Fonts"
 

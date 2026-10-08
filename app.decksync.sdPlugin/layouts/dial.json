@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.elgato.com/streamdeck/plugins/layout.json",
-	"id": "no.berland.decksync.dial",
+	"id": "app.decksync.dial",
 	"items": [
 		{ "key": "r1", "type": "text", "rect": [8, 2, 184, 24], "font": { "size": 15, "weight": 600 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#ffffff", "value": "", "zOrder": 1 },
 		{ "key": "r2", "type": "text", "rect": [8, 26, 184, 24], "font": { "size": 15, "weight": 600 }, "alignment": "left", "text-overflow": "ellipsis", "color": "#ffffff", "value": "", "zOrder": 1 },

@@ -44,7 +44,7 @@ When a marker becomes visible, DeckSync knows which page that deck is showing an
 
 **Manual install**
 
-1. Download `no.berland.decksync.streamDeckPlugin`.
+1. Download `app.decksync.streamDeckPlugin`.
 2. Double-click the file. The Stream Deck app asks whether to install the plugin; confirm.
 3. If the app does not react, make sure it is running, then try again.
 
@@ -118,7 +118,7 @@ DeckSync runs entirely on your computer. It makes no network requests and collec
 npm install
 npm run build      # generates profiles/ and bin/
 npm run validate
-npm run pack       # dist/no.berland.decksync.streamDeckPlugin
+npm run pack       # dist/app.decksync.streamDeckPlugin
 ```
 
 `npm run images` regenerates icons and Marketplace images from `tools/gen-images.py` (needs Python 3 with Pillow).
