@@ -98,7 +98,7 @@ Pages are named in the Stream Deck app, in the DeckSync profile of each deck. De
 
 Need more keys on a page than a deck has? Use the Stream Deck app's own folders. Put a folder on the page, and fill it with as many keys and pages as you like. DeckSync syncs at page level, so the other decks stay where they are while you work inside a folder, and if another deck turns the page, this deck leaves the folder and follows. The strip and the sync square keep showing the last known page while a deck is inside a folder.
 
-Matching key images for folder keys and their Back key are in the [icons](icons) folder: `DeckSync Folder.png` and `DeckSync Back.png`. Set them on the key in the Stream Deck app with "Set from file".
+A plain key background in the same style as the DeckSync keys is in the [icons](icons) folder: `DeckSync Tile.png`. Set it on folder keys, or any key, with "Set from file" in the Stream Deck app, and add your own title or icon on top.
 
 ## Tips and limitations
 

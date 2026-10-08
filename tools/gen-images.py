@@ -220,8 +220,7 @@ def main():
     plugin_icon(1024).save(os.path.join(MARKET, "app-icon-1024.png"))
     ICONS = os.path.join(ROOT, "icons")
     os.makedirs(ICONS, exist_ok=True)
-    folder_icon(144).save(os.path.join(ICONS, "DeckSync Folder.png"))
-    back_icon(144).save(os.path.join(ICONS, "DeckSync Back.png"))
+    tile_base(576)[0].resize((144, 144), Image.LANCZOS).save(os.path.join(ICONS, "DeckSync Tile.png"))  # bare flisen, til egne taster og mapper
 
     slide(
         "Keep every Stream Deck on the same page",
