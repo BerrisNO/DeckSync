@@ -305,6 +305,45 @@ def g_led_bar(d, cx, cy, k, c, w):
         d.line((cx + s * 14 * k, cy + 7 * k, cx + s * 18 * k, cy + 16 * k), fill=c, width=w)
 
 
+def g_folder_filled(d, cx, cy, k, c, w):
+    """Fylt mappe (farge skiller mappene), litt større, med plass til tittel under."""
+    x0, y0, x1, y1 = cx - 26 * k, cy - 16 * k, cx + 26 * k, cy + 18 * k
+    tab_h = 8 * k
+    # flat farge, ingen skygge eller kant: tapp og kropp i samme tone
+    d.rounded_rectangle((x0, y0, x0 + 22 * k, y0 + tab_h + 4 * k), radius=4 * k, fill=c)
+    d.rounded_rectangle((x0, y0 + tab_h, x1, y1), radius=5 * k, fill=c)
+
+
+FOLDER_COLORS = [
+    ("White", (236, 240, 244)),
+    ("Cyan", (38, 184, 168)),
+    ("Blue", (66, 133, 244)),
+    ("Purple", (156, 102, 230)),
+    ("Pink", (236, 82, 150)),
+    ("Red", (230, 72, 72)),
+    ("Orange", (242, 150, 48)),
+    ("Yellow", (240, 200, 60)),
+    ("Green", (72, 200, 110)),
+    ("Grey", (130, 142, 158)),
+]
+
+
+def folder_sheet(out):
+    cols = 5
+    cell, pad = 144, 24
+    rows = (len(FOLDER_COLORS) + cols - 1) // cols
+    sheet = Image.new("RGB", (cols * (cell + pad) + pad, rows * (cell + pad + 28) + pad), (43, 43, 43))
+    d = ImageDraw.Draw(sheet)
+    f = font("segoeui.ttf", 16)
+    for i, (name, color) in enumerate(FOLDER_COLORS):
+        x = pad + (i % cols) * (cell + pad)
+        y = pad + (i // cols) * (cell + pad + 28)
+        sheet.paste(glyph_tile(cell, g_folder_filled, color), (x, y))
+        tw = d.textlength(name, font=f)
+        d.text((x + (cell - tw) / 2, y + cell + 4), name, font=f, fill=(220, 220, 220))
+    sheet.save(out)
+
+
 ICON_SET = [("Folder", g_folder), ("Back", g_back), ("Groups", g_groups), ("Presets", g_presets), ("Light", g_light),
             ("Sound", g_sound), ("Video", g_video), ("Play", g_play), ("Home", g_home), ("Star", g_star), ("Settings", g_gear),
             ("Moving Head", g_moving_head), ("Beam Head", g_beam_head), ("PAR", g_par), ("Vintage Bowl", g_vintage_bowl), ("LED Bar", g_led_bar)]
@@ -399,6 +438,11 @@ def main():
     tile_base(576)[0].resize((144, 144), Image.LANCZOS).save(os.path.join(ICONS, "DeckSync Tile.png"))  # bare flisen, til egne taster og mapper
     for name, glyph in ICON_SET:
         glyph_tile(144, glyph).save(os.path.join(ICONS, f"DeckSync {name}.png"))
+    FOLDERS = os.path.join(ICONS, "folders")
+    os.makedirs(FOLDERS, exist_ok=True)
+    for name, color in FOLDER_COLORS:
+        glyph_tile(144, g_folder_filled, color).save(os.path.join(FOLDERS, f"Folder {name}.png"))
+    folder_sheet(os.path.join(ROOT, "notes", "mock", "folder-sheet.png"))
     icon_sheet(os.path.join(ROOT, "notes", "mock", "icon-sheet.png"))
     icon_sheet(os.path.join(ROOT, "notes", "mock", "icon-sheet-cyan.png"), cyan=True)
 
