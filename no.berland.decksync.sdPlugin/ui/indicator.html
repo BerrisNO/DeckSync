@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="utf-8" />
+	<title>DeckSync page indicator</title>
+	<script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
+</head>
+<body>
+	<div id="deck">
+		<sdpi-item label="Show deck"><span style="color:#999">Loading…</span></sdpi-item>
+	</div>
+	<p style="color:#999;font-size:11px;margin:8px 12px;line-height:1.4">
+		Shows the page that deck is on: the page name from the Stream Deck app, with "p3" underneath. Another deck's name is shown at the top.<br>
+		Press: take this deck to the shown page. When it shows its own deck, a press forces a resync of the others.
+	</p>
+	<script>
+		(async () => {
+			const { streamDeckClient } = SDPIComponents;
+			const g = (await streamDeckClient.getGlobalSettings()) || {};
+			const devices = Array.isArray(g.devices) ? g.devices : [];
+			const el = document.getElementById("deck");
+			el.innerHTML = "";
+			const item = document.createElement("sdpi-item");
+			item.setAttribute("label", "Show deck");
+			const select = document.createElement("sdpi-select");
+			select.setAttribute("setting", "deck");
+			const self = document.createElement("option");
+			self.value = "";
+			self.textContent = "This deck";
+			select.appendChild(self);
+			for (const d of devices) {
+				const opt = document.createElement("option");
+				opt.value = d.id;
+				const custom = typeof g["deckname_" + d.id] === "string" ? g["deckname_" + d.id].trim() : "";
+				opt.textContent = custom ? `${custom} (${d.name})` : d.name;
+				select.appendChild(opt);
+			}
+			item.appendChild(select);
+			el.appendChild(item);
+		})();
+	</script>
+</body>
+</html>

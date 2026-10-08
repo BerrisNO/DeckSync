@@ -1,0 +1,175 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+	"UUID": "no.berland.decksync",
+	"Name": "DeckSync",
+	"Version": "0.3.0.0",
+	"Author": "Berris",
+	"URL": "https://github.com/BerrisNO/DeckSync",
+	"Description": "Keeps several Stream Decks on the same page, or sends each deck to its own page. Page markers on every page, Go to page keys, and a page dial for Stream Deck +.",
+	"Category": "DeckSync",
+	"CategoryIcon": "imgs/category",
+	"Icon": "imgs/plugin",
+	"CodePath": "bin/plugin.js",
+	"SDKVersion": 3,
+	"Software": {
+		"MinimumVersion": "7.1"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		},
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		}
+	],
+	"Nodejs": {
+		"Version": "24"
+	},
+	"Profiles": [
+		{
+			"Name": "profiles/DeckSync 15",
+			"DeviceType": 0,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "profiles/DeckSync Mini",
+			"DeviceType": 1,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "profiles/DeckSync XL",
+			"DeviceType": 2,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "profiles/DeckSync Plus",
+			"DeviceType": 7,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "profiles/DeckSync Neo",
+			"DeviceType": 9,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		}
+	],
+	"Actions": [
+		{
+			"Name": "Page marker",
+			"UUID": "no.berland.decksync.marker",
+			"Icon": "imgs/marker",
+			"Tooltip": "One per page, pre-installed in the DeckSync profiles. When the page appears, the other decks follow. Press to resync.",
+			"PropertyInspectorPath": "ui/marker.html",
+			"Controllers": [
+				"Keypad",
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "$A0",
+				"TriggerDescription": {
+					"Push": "Resync"
+				}
+			},
+			"States": [
+				{
+					"Image": "imgs/key",
+					"TitleAlignment": "bottom",
+					"FontSize": 12
+				}
+			]
+		},
+		{
+			"Name": "Page indicator",
+			"UUID": "no.berland.decksync.indicator",
+			"Icon": "imgs/indicator",
+			"Tooltip": "Shows which page a deck is on, in the same style as the page marker. Press: take this deck to that page (or resync when it shows its own deck).",
+			"PropertyInspectorPath": "ui/indicator.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/key",
+					"TitleAlignment": "bottom",
+					"FontSize": 12
+				}
+			]
+		},
+		{
+			"Name": "Go to page",
+			"UUID": "no.berland.decksync.goto",
+			"Icon": "imgs/goto",
+			"Tooltip": "Press: send each deck to the page you set. Empty field = that deck stays put.",
+			"PropertyInspectorPath": "ui/goto.html",
+			"Controllers": [
+				"Keypad",
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "$A0",
+				"TriggerDescription": {
+					"Push": "Go to pages",
+					"Touch": "Go to pages"
+				}
+			},
+			"States": [
+				{
+					"Image": "imgs/key",
+					"TitleAlignment": "bottom",
+					"FontSize": 12
+				}
+			]
+		},
+		{
+			"Name": "Page dial",
+			"UUID": "no.berland.decksync.dial",
+			"Icon": "imgs/dial",
+			"Tooltip": "Turn: pick a page. Press: go there. Hold and turn: pick the target deck (ALL or one). Touch: go there. The target is shared with the Target key.",
+			"PropertyInspectorPath": "ui/names.html",
+			"Controllers": [
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "layouts/dial.json",
+				"TriggerDescription": {
+					"Rotate": "Pick page (hold: pick deck)",
+					"Push": "Go to page",
+					"Touch": "Go to page"
+				}
+			},
+			"States": [
+				{
+					"Image": "imgs/dial-key"
+				}
+			]
+		},
+		{
+			"Name": "Target",
+			"UUID": "no.berland.decksync.target",
+			"Icon": "imgs/target",
+			"Tooltip": "Press: choose which decks the page dial controls (ALL or one deck).",
+			"PropertyInspectorPath": "ui/names.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/key",
+					"TitleAlignment": "middle",
+					"FontSize": 12
+				}
+			]
+		}
+	]
+}

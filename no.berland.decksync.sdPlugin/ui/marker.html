@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="utf-8" />
+	<title>DeckSync page marker</title>
+	<script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
+</head>
+<body>
+	<sdpi-item label="This page">
+		<sdpi-textfield setting="page" pattern="[0-9]*" placeholder="1" default="1"></sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item label="Others go to page">
+		<sdpi-textfield setting="target" pattern="[0-9]*" placeholder="Same as this page"></sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item label="Show label">
+		<sdpi-checkbox setting="showLabel" default="true"></sdpi-checkbox>
+	</sdpi-item>
+	<p style="color:#999;font-size:11px;margin:8px 12px;line-height:1.4">
+		"This page" is the page this marker sits on (1 = first page). The DeckSync profiles come with one marker on every page.<br>
+		The key shows the page's name from the Stream Deck app, with "p3" underneath. Name the page in the app and the marker follows.<br>
+		"Others go to page" maps pages freely, e.g. page 2 here sends the other decks to page 4. Empty = same number.<br>
+		Press the marker to force a resync.
+	</p>
+</body>
+</html>

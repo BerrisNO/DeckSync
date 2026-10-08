@@ -1,0 +1,9 @@
+node_modules/
+dist/
+test/out.mjs
+no.berland.decksync.sdPlugin/bin/
+*.streamDeckPlugin
+logs/
+no.berland.decksync.sdPlugin/logs/
+no.berland.decksync.sdPlugin/profiles/
+notes/

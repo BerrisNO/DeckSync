@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="utf-8" />
+	<title>DeckSync go to page</title>
+	<script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
+</head>
+<body>
+	<div id="targets">
+		<sdpi-item label="Stream Deck (15 keys)"><span style="color:#999">Loading…</span></sdpi-item>
+	</div>
+	<p style="color:#999;font-size:11px;margin:8px 12px;line-height:1.4">
+		Pressing the key (or dial) sends each deck to the page you pick, including the deck the key is on.<br>
+		"Unchanged" = that deck stays put. Page names come from the Stream Deck app (name the pages of the DeckSync profiles there).
+	</p>
+	<script>
+		(async () => {
+			const { streamDeckClient } = SDPIComponents;
+			const g = (await streamDeckClient.getGlobalSettings()) || {};
+			const count = Number(g.pages) > 0 ? Number(g.pages) : 10;
+			const names = g.pageNames || {};
+			const el = document.getElementById("targets");
+			el.innerHTML = "";
+			const decks = [
+				["sd15", "Stream Deck (15 keys)", "profiles/DeckSync 15"],
+				["plus", "Stream Deck +", "profiles/DeckSync Plus"],
+			];
+			for (const [setting, label, profile] of decks) {
+				const list = Array.isArray(names[profile]) ? names[profile] : [];
+				const item = document.createElement("sdpi-item");
+				item.setAttribute("label", label);
+				const select = document.createElement("sdpi-select");
+				select.setAttribute("setting", setting);
+				const none = document.createElement("option");
+				none.value = "";
+				none.textContent = "Unchanged";
+				select.appendChild(none);
+				for (let n = 1; n <= count; n++) {
+					const opt = document.createElement("option");
+					opt.value = String(n);
+					const name = typeof list[n - 1] === "string" ? list[n - 1].trim() : "";
+					opt.textContent = name ? `p${n} · ${name}` : `Page ${n}`;
+					select.appendChild(opt);
+				}
+				item.appendChild(select);
+				el.appendChild(item);
+			}
+		})();
+	</script>
+</body>
+</html>

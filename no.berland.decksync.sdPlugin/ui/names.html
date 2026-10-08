@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="utf-8" />
+	<title>DeckSync deck names</title>
+	<script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
+</head>
+<body>
+	<div id="decks">
+		<sdpi-item label="Deck names"><span style="color:#999">Fetching decks…</span></sdpi-item>
+	</div>
+	<p style="color:#999;font-size:11px;margin:8px 12px;line-height:1.4">
+		The deck name is shown on the page dial ("Programming · p3 → Lights") and on the Target key. Names are shared by all page dials and Target keys. Empty = the device's own name.<br>
+		Page names come from the Stream Deck app: name the pages of the DeckSync profiles there, and the dial, the page markers and Go to page pick them up.
+	</p>
+	<script>
+		(async () => {
+			const { streamDeckClient } = SDPIComponents;
+			const el = document.getElementById("decks");
+			const g = (await streamDeckClient.getGlobalSettings()) || {};
+			const devices = Array.isArray(g.devices) ? g.devices : [];
+			el.innerHTML = "";
+			if (devices.length === 0) {
+				el.innerHTML = '<sdpi-item label="Deck names"><span style="color:#999">No decks registered yet. Close and reopen these settings.</span></sdpi-item>';
+				return;
+			}
+			for (const d of devices) {
+				const item = document.createElement("sdpi-item");
+				item.setAttribute("label", d.name);
+				const field = document.createElement("sdpi-textfield");
+				field.setAttribute("global", "");
+				field.setAttribute("setting", "deckname_" + d.id);
+				field.setAttribute("placeholder", d.name.replace(/^Stream Deck\s*/i, "") || d.name);
+				item.appendChild(field);
+				el.appendChild(item);
+			}
+		})();
+	</script>
+</body>
+</html>
