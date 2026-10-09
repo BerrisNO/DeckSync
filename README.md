@@ -116,6 +116,20 @@ Open the settings of any Page dial or Target key. One text field per connected d
 ### Page names
 Pages are named in the Stream Deck app, in the DeckSync profile of each deck. DeckSync reads those names from the app's profile files and updates the markers, the dial and the Go to page lists within a second. With target ALL, the dial shows a page name when every deck agrees on it, otherwise "Page 3".
 
+## Virtual Stream Deck as a remote
+
+A Virtual Stream Deck on your screen can drive your physical decks and save keys on them. It needs no DeckSync profile and no page marker: you set it up yourself, in any grid size, with DeckSync's keys.
+
+1. Enable Virtual Stream Deck in the Stream Deck app and create one.
+2. Drag DeckSync actions onto it:
+   - **Page step** (Previous and Next): moves all decks, or the Target key's choice. The keys show the page they lead to.
+   - **Go to page**: one key per page you use often, for all decks or one page per deck.
+   - **Page indicator**: shows where a deck is. Pick the deck in its settings.
+   - **Target**: choose which deck Page step moves.
+3. That is all. The virtual deck itself stays on its own page; it only controls the others.
+
+The same works for any deck you would rather keep out of the sync: put the keys on a profile of your own.
+
 ## Folders
 
 Need more keys than a page has? Use the Stream Deck app's own folders. Put a folder on a page and fill it with as many keys and pages as you like. DeckSync syncs at page level, so the other decks stay where they are while you work inside a folder, and if another deck turns the page, this deck leaves the folder and follows. The strip and the sync square keep showing the last known page while a deck is inside a folder.

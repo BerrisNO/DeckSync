@@ -323,9 +323,22 @@ type StepSettings = {
 	scope?: string;
 };
 
-/** Siden et steg går til fra dette decket, eller undefined ved kanten / ukjent side. */
+/**
+ * Decket en tast regner ut fra. Ligger tasten på et DeckSync-deck, er det decket selv. Ligger den på et deck
+ * uten DeckSync-profil (f.eks. Virtual Stream Deck brukt som fjernkontroll), brukes målet, ellers første deck med kjent side.
+ */
+function referenceDevice(deviceId: string): Device | undefined {
+	const decks = syncable();
+	const own = decks.find((d) => d.id === deviceId);
+	if (own) return own;
+	const chosen = target === "all" ? undefined : decks.find((d) => d.id === target);
+	return chosen ?? decks.find((d) => currentPage.has(d.id)) ?? decks[0];
+}
+
+/** Siden et steg går til, regnet fra referansedecket, eller undefined ved kanten / ukjent side. */
 function stepDestination(deviceId: string, dir: number): number | undefined {
-	const from = currentPage.get(deviceId);
+	const ref = referenceDevice(deviceId);
+	const from = ref ? currentPage.get(ref.id) : undefined;
 	if (!from) return undefined;
 	const to = from + dir;
 	return to >= 1 && to <= PAGES ? to : undefined;
@@ -338,8 +351,9 @@ async function renderStep(a: Action<StepSettings>, settings: StepSettings): Prom
 	const note = settings.mode === "prev" ? "\u2039 prev" : settings.mode === "both" ? "next \u203a" : "next \u203a";
 	try {
 		await a.setTitle("");
-		const svg = to
-			? tileSvg(pageNameFor(to, a.device) ?? `Page ${to}`, { number: `p${to}`, note, icon: pageIconFor(to, a.device) ?? DEFAULT_PAGE_ICON })
+		const ref = referenceDevice(a.device.id);
+		const svg = to && ref
+			? tileSvg(pageNameFor(to, ref) ?? `Page ${to}`, { number: `p${to}`, note, icon: pageIconFor(to, ref) ?? DEFAULT_PAGE_ICON })
 			: tileSvg("\u2014", { note, dim: true });
 		await a.setImage(svgUri(svg));
 	} catch {
@@ -348,14 +362,15 @@ async function renderStep(a: Action<StepSettings>, settings: StepSettings): Prom
 }
 
 async function doStep(a: Action<StepSettings>, settings: StepSettings, dir: number): Promise<void> {
-	const own = streamDeck.devices.getDeviceById(a.device.id);
+	const own = syncable().find((d) => d.id === a.device.id);
 	const to = stepDestination(a.device.id, dir);
-	if (!own || !to) {
+	if (!to) {
 		if (a.isKey()) await a.showAlert();
 		return;
 	}
 	const scope = settings.scope ?? "all";
-	const devices = scope === "this" ? [own] : scope === "target" ? targetDevices() : syncable();
+	// «This deck» på et deck uten DeckSync-profil (fjernkontroll) betyr alle deck.
+	const devices = scope === "this" && own ? [own] : scope === "target" ? targetDevices() : syncable();
 	for (const d of devices) await jumpTo(d, to, `page step (${scope})`);
 }
 
@@ -401,7 +416,7 @@ type IndicatorSettings = {
 /** Hvilket deck en indikator viser: valgt deck hvis det er tilkoblet, ellers eget deck. */
 function indicatorDevice(a: Action<IndicatorSettings>, settings: IndicatorSettings): Device | undefined {
 	const chosen = settings.deck ? streamDeck.devices.getDeviceById(settings.deck) : undefined;
-	return chosen && chosen.isConnected ? chosen : streamDeck.devices.getDeviceById(a.device.id);
+	return chosen && chosen.isConnected ? chosen : referenceDevice(a.device.id);
 }
 
 async function renderIndicator(a: Action<IndicatorSettings>, settings: IndicatorSettings): Promise<void> {
@@ -409,8 +424,8 @@ async function renderIndicator(a: Action<IndicatorSettings>, settings: Indicator
 	const shown = indicatorDevice(a, settings);
 	const page = shown ? currentPage.get(shown.id) : undefined;
 	const name = shown && page ? pageNameFor(page, shown) : undefined;
-	const other = shown && shown.id !== a.device.id;
-	const lit = !!shown && !!page && (other ? currentPage.get(a.device.id) === page : inSync(shown.id, page));
+	const other = !!shown && shown.id !== a.device.id;
+	const lit = !!shown && !!page && (other && currentPage.has(a.device.id) ? currentPage.get(a.device.id) === page : inSync(shown.id, page));
 	try {
 		await a.setTitle("");
 		const svg = tileSvg(page ? (name ?? "") : "—", {
@@ -465,14 +480,15 @@ class PageIndicator extends SingletonAction<IndicatorSettings> {
 	/** Trykk: viser den et annet deck, går dette decket til samme side. Viser den eget deck, tvinges en resynk. */
 	override async onKeyDown(ev: KeyDownEvent<IndicatorSettings>): Promise<void> {
 		const shown = indicatorDevice(ev.action, ev.payload.settings);
-		const own = streamDeck.devices.getDeviceById(ev.action.device.id);
-		if (!shown || !own) return;
+		if (!shown) return;
 		const page = currentPage.get(shown.id);
 		if (!page) return;
-		if (shown.id !== own.id) {
+		const own = syncable().find((d) => d.id === ev.action.device.id);
+		if (own && shown.id !== own.id) {
 			await jumpTo(own, page, `indicator (${nameFor(shown)})`);
 		} else {
-			await syncFrom(own.id, { page }, true);
+			// eget deck, eller tast på et deck uten DeckSync-profil: alle andre til den viste siden
+			await syncFrom(shown.id, { page }, true);
 		}
 		if (ev.action.isKey()) await ev.action.showOk();
 	}
