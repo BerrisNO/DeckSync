@@ -223,7 +223,7 @@ E = empty()
 EDIT_PLUS = lambda lit=True: [U["undo"], U["redo"], E, mk(2, lit), U["brush"], U["crop"], U["layers"], E]
 EDIT_15 = lambda: [U["zoom"], U["text"], E, E, mk(2), U["save"], U["export"], E, E, E, E, E, E, E, E]
 HOME_15 = lambda: [U["mail"], U["calendar"], E, E, mk(1, False), U["music"], U["play"], U["next"], E, E, E, E, E, E, E]
-SEGS = [("Brush size", 40), ("Opacity", 80), ("Zoom", 100)]
+SEGS = []  # ingen andre dialer på stripen: bare DeckSync-feltet
 
 
 def both(name, fn):
