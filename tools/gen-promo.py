@@ -280,6 +280,8 @@ def main():
                                            EDIT_PLUS(False), HOME_15(), ([("Deck1: Page 2 Edit", WHITE), ("Deck2: Page 1 Home", WHITE)], "PAGES", GREY, SEGS)))
     both("3-dial.png", lambda o: il.scene(o, "One dial for every page", "Turn to pick a page, press to go there. Hold and turn to choose which deck.",
                                           EDIT_PLUS(), EDIT_15(), ([("Stream", WHITE), ("target: ALL", GREY)], "→ Page 3", CYAN, SEGS), dial_active=True))
+    il.scene(os.path.join(ROOT, "marketplace", "thumbnail-1920x960.png"), "DeckSync", "Keep every Stream Deck on the same page, or send each deck to its own page.",
+             EDIT_PLUS(), EDIT_15(), ([("Deck1 - Edit", WHITE), ("Deck2 - Edit", WHITE)], "ALL: Page 2", CYAN, SEGS))
     both("5-no-dial.png", no_dial)
     both("6-virtual-remote.png", virtual)
     print("ok")

@@ -9,22 +9,24 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 ## Features
 
 - **Follow mode.** Every page in a DeckSync profile carries a page marker. When a page appears on one deck, the other decks jump to the same page. No loops, no polling.
-- **No dial required.** Page step keys give decks without a dial the same next/previous control, and show the page they go to.
-- **Page indicator.** A display key that shows which page any deck is on, name and number, wherever you put it.
-- **Go to page.** One key sends each deck to its own page, for example the 15-key deck to page 2 while Stream Deck + stays on page 1.
-- **Page dial** (Stream Deck +). Turn to pick a page, press to go there, hold and turn to choose the target (ALL decks or a single one). The touch strip shows the page name and `Page 3 → ALL`.
-- **Target key.** The same target switch on an ordinary key.
-- **Deck names.** Call your decks "Lights" and "Sound" instead of "Module 15" and "+".
-- **Page names and icons.** Name the pages and give them icons in the Stream Deck app, and DeckSync shows them everywhere: on the page marker (icon with the name underneath and "Page 3" in the corner), on the dial ("ALL: Page 3 Programming") and in the Go to page lists. Naming your pages is the single most useful setup step.
+- **Works with any Stream Deck.** Decks with dials get a page dial. Decks without get Page step keys for next and previous, which show the page they lead to.
+- **Clear keys.** DeckSync keys are black like any Stream Deck key, with a thin frame that lights up when the decks are in sync. Each shows the page number, an icon and the page name.
+- **Page names and icons.** Name your pages and give them icons in the Stream Deck app, and DeckSync shows them on the keys, on the dial and in the page lists. Pages without an icon show their number.
+- **Page dial** (Stream Deck +). Turn to pick a page, press to go there, hold and turn to choose the target: all decks or a single one. The touch strip shows where every deck is.
+- **Go to page.** One key sends all decks, or each deck, to the page you pick.
+- **Page indicator.** A display key that shows which page any deck is on. Pin one and it follows you to every page.
+- **Virtual Stream Deck as a remote.** Put DeckSync keys on a virtual deck on your screen and control the physical ones from there.
+- **Your colours.** Set your own hex codes for the accent, the frame, the background and the text.
+- **Deck names.** Call your decks "Editing" and "Stream" instead of their model names.
 - **Zero setup.** DeckSync ships a ready profile for every supported device type and installs it the first time a deck is seen.
 
 ## Examples
 
-**Follow mode.** Both decks on page 2. The page markers show the page name and icon, the lit frame means the decks are in sync, and the strip reads `ALL: Page 2`.
+**Follow mode.** Both decks on page 2. The framed keys are the page markers: page number, icon and name. The lit frame means the decks are in sync, and the strip reads `ALL: Page 2`.
 
 ![Every deck on the same page](docs/examples/1-follow.png)
 
-**Split.** Stream Deck + stays on page 2 while the other deck is on page 1. The strip lists where every deck is.
+**Split.** Stream Deck + stays on page 2 while the other deck is on page 1. The frames are grey, and the strip lists where every deck is.
 
 ![Each deck its own way](docs/examples/2-split.png)
 
@@ -87,7 +89,7 @@ Right-click DeckSync in the actions list and choose Uninstall. The DeckSync prof
 ## Getting started
 
 1. Build your pages inside the DeckSync profiles. Keep the page marker on each page; you can move it to any key.
-2. **Name the pages and give them icons.** This is what makes DeckSync readable: in the Stream Deck app, right-click a page number in the page bar of a DeckSync profile and set a name and an icon. The page markers then show the icon with the name underneath, the page dial reads "ALL: Page 3 Lights" instead of just "Page 3", and the Go to page lists show names instead of numbers. Do it on every deck, since each deck has its own profile and its own page names. Unnamed pages show only "Page 3" and a default icon.
+2. **Name the pages and give them icons.** This is what makes DeckSync readable: in the Stream Deck app, right-click a page number in the page bar of a DeckSync profile and set a name and an icon. The page markers then show the icon with the name underneath, the page dial reads "ALL: Page 3 Stream" instead of just "ALL: Page 3", and the Go to page lists show names. Do it on every deck, since each deck has its own profile and its own page names. Pages without a name or icon show "Page 3" and the page number as icon.
 3. Change page on any deck, with the page dial, a Go to page key or the app's own Next/Previous page actions if you add them. The other decks follow.
 4. Want a deck on a different page? Use a Go to page key, or the page dial on Stream Deck +.
 
@@ -97,9 +99,9 @@ Right-click DeckSync in the actions list and choose Uninstall. The DeckSync prof
 One per page. The key shows the page's name and icon from the Stream Deck app, with "Page 3" in the corner and a frame that lights up when the other decks are on the same page. Setting **This page** is the page number the marker sits on (pre-filled in the DeckSync profiles). **Others go to page** maps pages freely, e.g. page 2 on this deck sends the others to page 4. Pressing a marker forces a resync.
 
 ### Page indicator
-A display key in the same style as the page marker, placed wherever you like.
+A display key in the same style as the page marker, placed wherever you like. It shows which page a deck is on: this deck, or another deck chosen in its settings, whose name is then shown at the bottom. Press it to take this deck to the shown page, or, when it shows its own deck, to resync the others.
 
-Tip: add one Page indicator and pin it to its position in the Stream Deck app. It then follows onto every page and shows the correct name, icon and page number for that deck, so one is enough. It shows which page a deck is on: this deck, or another deck chosen in its settings (that deck's name is shown at the bottom). If the page has an icon in the Stream Deck app, the icon is shown above the name. Press it to take this deck to the shown page, or, when it shows its own deck, to force a resync of the others.
+Tip: add one Page indicator and pin it to its position in the Stream Deck app. It then follows onto every page and shows the correct name, icon and page number for that deck, so one is enough.
 
 ### Page step
 Next or previous page on an ordinary key, for decks without a dial. The key shows the page it goes to, with that page's name and icon. Settings: direction (Next, Previous, or "Next, hold for previous" to fit both on one key) and what it moves (all decks, this deck only, or the Target key's choice). The DeckSync profiles for decks without dials come with a Previous and a Next key in the bottom corners.
@@ -116,10 +118,10 @@ Pick a page for all decks, or a page per connected deck. Pressing the key, dial 
 The chosen page and target are shared by all page dials and remembered across restarts.
 
 ### Target
-A key that switches the same target as the page dial. Shows the current target as its title.
+A key that switches the same target as the page dial, and shows the current target.
 
 ### Deck names
-Open the settings of any Page dial or Target key. One text field per connected deck lets you name it. Names are shared by every dial and Target key.
+Open the settings of any Page dial or Target key. One text field per connected deck lets you name it. Names are shown on the strip, in Go to page and on indicators.
 
 ### Colours
 Every DeckSync key is a black key with a thin frame that lights up in the accent colour when the decks are in sync. Open the settings of a Page marker, Page indicator, Page step, Page dial or Target key to set your own hex codes for the accent, the frame, the background and the text. The colours apply to all DeckSync keys and the dial strip.
@@ -143,9 +145,7 @@ The same works for any deck you would rather keep out of the sync: put the keys 
 
 ## Folders
 
-Need more keys than a page has? Use the Stream Deck app's own folders. Put a folder on a page and fill it with as many keys and pages as you like. DeckSync syncs at page level, so the other decks stay where they are while you work inside a folder, and if another deck turns the page, this deck leaves the folder and follows. The strip and the sync square keep showing the last known page while a deck is inside a folder.
-
-Key images in the DeckSync style are in the [icons](icons) folder: a plain tile, a small icon set, lighting fixture silhouettes, and coloured tiles with and without a folder mark in [icons/folders](icons/folders). Set them on a key with "Set from file" in the Stream Deck app.
+Need more keys than a page has? Use the Stream Deck app's own folders. Put a folder on a page and fill it with as many keys and pages as you like. DeckSync syncs at page level, so the other decks stay where they are while you work inside a folder, and if another deck turns the page, this deck leaves the folder and follows. The strip and the frames keep showing the last known page while a deck is inside a folder.
 
 ## Tips and limitations
 
@@ -163,7 +163,7 @@ If a deck never received its DeckSync profile, remove the plugin and install it 
 
 ## Privacy
 
-DeckSync runs entirely on your computer. It makes no network requests and collects no data. Settings (deck names, dial state) are stored by the Stream Deck app.
+DeckSync runs entirely on your computer. It makes no network requests and collects no data. Settings (deck names, colours, dial state) are stored by the Stream Deck app. Page names and icons are read from the app's own profile files on your computer.
 
 ## Building from source
 
@@ -174,7 +174,7 @@ npm run validate
 npm run pack       # dist/app.decksync.streamDeckPlugin
 ```
 
-`npm run images` regenerates icons and Marketplace images from `tools/gen-images.py` (needs Python 3 with Pillow).
+`npm run images` regenerates the plugin icons from `tools/gen-images.py`; the example images come from `tools/gen-promo.py` and `tools/gen-dial-illustration.py` (Python 3 with Pillow).
 
 ## Support
 

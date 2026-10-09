@@ -1,4 +1,4 @@
-# Lager plugin-ikon, tastebilder, Marketplace-thumbnail og galleribilder for DeckSync med Pillow.
+# Lager plugin-ikon, tastebilder og app-ikon for DeckSync med Pillow. Reklamebildene lages av gen-promo.py.
 # Kjøres av `npm run images` (python -I tools/gen-images.py). Monokrome SVG-ikoner (kategori/handlinger)
 # ligger håndskrevet i imgs/ og lages ikke her.
 import math
@@ -105,13 +105,13 @@ def plugin_icon(size):
 
 
 def key_image(size):
-    """Statisk tastebilde i samme stil som MA3Deck-tastene: mørk bakgrunn, avrundet flis med kant, liten badge øverst."""
-    S = 576  # = 144 * 4
+    """Statisk tastebilde (handlingslisten, og før pluginen har tegnet): svart tast med tynn ramme og liten badge."""
+    S = 576
     k = S / 144
-    img = Image.new("RGB", (S, S), (16, 21, 28))  # #10151C
+    img = Image.new("RGB", (S, S), (10, 11, 13))
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle((6 * k, 6 * k, 138 * k, 138 * k), radius=14 * k, fill=(35, 46, 61), outline=(58, 70, 87), width=int(3 * k))  # #232E3D / #3A4657
-    draw_sync_badge(d, S / 2, 52 * k, 20 * k, S / 1024)
+    d.rounded_rectangle((5 * k, 5 * k, 139 * k, 139 * k), radius=18 * k, outline=(70, 74, 82), width=int(3 * k))
+    draw_sync_badge(d, S / 2, 60 * k, 22 * k, S / 1024)
     return img.resize((size, size), Image.LANCZOS)
 
 
@@ -450,44 +450,6 @@ def main():
     badge_only(56).save(os.path.join(IMGS, "badge.png"))
     badge_only(112).save(os.path.join(IMGS, "badge@2x.png"))
     plugin_icon(1024).save(os.path.join(MARKET, "app-icon-1024.png"))
-    ICONS = os.path.join(ROOT, "icons")
-    os.makedirs(ICONS, exist_ok=True)
-    tile_base(576)[0].resize((144, 144), Image.LANCZOS).save(os.path.join(ICONS, "DeckSync Tile.png"))  # bare flisen, til egne taster og mapper
-    for name, glyph in ICON_SET:
-        glyph_tile(144, glyph).save(os.path.join(ICONS, f"DeckSync {name}.png"))
-    FOLDERS = os.path.join(ICONS, "folders")
-    os.makedirs(FOLDERS, exist_ok=True)
-    for name, color in FOLDER_COLORS:
-        colored_tile(144, color, g_folder_filled).save(os.path.join(FOLDERS, f"Folder {name}.png"))
-        colored_tile(144, color).save(os.path.join(FOLDERS, f"Tile {name}.png"))  # bare farget flis, til andre taster
-    folder_sheet(os.path.join(ROOT, "notes", "mock", "folder-sheet.png"))
-    icon_sheet(os.path.join(ROOT, "notes", "mock", "icon-sheet.png"))
-    icon_sheet(os.path.join(ROOT, "notes", "mock", "icon-sheet-cyan.png"), cyan=True)
-
-    slide(
-        "Keep every Stream Deck on the same page",
-        ["Turn a page on one deck and the others follow. Works across Stream Deck, Stream Deck +, XL, Mini and Neo.",
-         "Or send each deck to its own page with a single key or a dial."],
-        os.path.join(MARKET, "thumbnail-1920x960.png"), show_decks=(3, 3),
-    )
-    slide(
-        "Page markers on every page",
-        ["DeckSync installs a profile per device with a page marker on every page.",
-         "When a page appears on one deck, the other decks jump to the same page. No loops, no lag."],
-        os.path.join(MARKET, "gallery-1-markers.png"), show_decks=(2, 2),
-    )
-    slide(
-        "Page dial on Stream Deck +",
-        ["Turn the dial to pick a page. Press it to choose the target: ALL decks or a single one.",
-         "Give each deck its own name, so the dial reads \"Page 4 → Lights\"."],
-        os.path.join(MARKET, "gallery-2-dial.png"), show_decks=(4, 1),
-    )
-    slide(
-        "Go to page: one key, different pages",
-        ["Set a page per deck on a key, dial or touch tap. Empty means that deck stays put.",
-         "Example: key 1 sends the 15-key deck to page 2 while Stream Deck + stays on page 1."],
-        os.path.join(MARKET, "gallery-3-goto.png"), show_decks=(2, 1),
-    )
     print("bilder skrevet til", IMGS, "og", MARKET)
 
 

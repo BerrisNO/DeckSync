@@ -224,7 +224,7 @@ async function showLabel(a: Action<MarkerSettings>, settings: MarkerSettings): P
 			const svg = tileSvg(show && name ? name : "", {
 				number: `Page ${page}`,
 				lit: inSync(a.device.id, page),
-				icon: pageIconFor(page, a.device) ?? DEFAULT_PAGE_ICON,
+				icon: pageIconFor(page, a.device) ?? defaultPageIcon(page),
 			});
 			await a.setImage(svgUri(svg));
 		} else {
@@ -367,7 +367,7 @@ async function renderStep(a: Action<StepSettings>, settings: StepSettings): Prom
 		await a.setTitle("");
 		const ref = referenceDevice(a.device.id);
 		const svg = to && ref
-			? tileSvg(pageNameFor(to, ref) ?? `Page ${to}`, { number: `Page ${to}`, note, icon: pageIconFor(to, ref) ?? DEFAULT_PAGE_ICON })
+			? tileSvg(pageNameFor(to, ref) ?? `Page ${to}`, { number: `Page ${to}`, note, icon: pageIconFor(to, ref) ?? defaultPageIcon(to) })
 			: tileSvg("\u2014", { note, dim: true });
 		await a.setImage(svgUri(svg));
 	} catch {
@@ -447,7 +447,7 @@ async function renderIndicator(a: Action<IndicatorSettings>, settings: Indicator
 			note: other ? nameFor(shown) : "",
 			lit,
 			dim: !page,
-			icon: shown && page ? (pageIconFor(page, shown) ?? DEFAULT_PAGE_ICON) : undefined,
+			icon: shown && page ? (pageIconFor(page, shown) ?? defaultPageIcon(page)) : undefined,
 		});
 		await a.setImage(svgUri(svg));
 	} catch {
@@ -649,10 +649,17 @@ function pageIconFor(page: number, device: Pick<Device, "type">): string | undef
 
 const iconCache = new Map<string, { mtimeMs: number; markup: (x: number, y: number, w: number, h: number) => string }>();
 
-/** Brukes som ikonsti når siden ikke har eget ikon i appen: et lite tastenett (en Stream Deck-side) i samme hvite strek som appens egne. */
-const DEFAULT_PAGE_ICON = "default:page";
-const DEFAULT_PAGE_ICON_INNER =
-	`<rect x="2.3" y="5.6" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="9.3" y="5.6" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="16.3" y="5.6" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="2.3" y="13" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="9.3" y="13" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="16.3" y="13" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/>`;
+/** Ikon for sider uten eget ikon i appen: sidetallet i en avrundet rute. Kodes som en «sti»: default:page:<n>. */
+const DEFAULT_PAGE_ICON_PREFIX = "default:page:";
+const defaultPageIcon = (page: number): string => `${DEFAULT_PAGE_ICON_PREFIX}${page}`;
+
+function defaultPageIconInner(page: number): string {
+	const c = color("text");
+	return (
+		`<rect x="2.5" y="2.5" width="19" height="19" rx="4" fill="none" stroke="${c}" stroke-width="1.7"/>` +
+		`<text x="12" y="${page > 9 ? 16.2 : 16.8}" font-size="${page > 9 ? 11 : 14}" font-weight="700" fill="${c}" text-anchor="middle" ${KEY_FONT}>${page}</text>`
+	);
+}
 
 /** Skalerer og sentrerer SVG-innhold med gitt viewBox i en boks (appens tegner ignorerer nestede <svg>). */
 function fitGroup(inner: string, vx: number, vy: number, vw: number, vh: number, bx: number, by: number, bw: number, bh: number): string {
@@ -667,7 +674,7 @@ function fitGroup(inner: string, vx: number, vy: number, vw: number, vh: number,
  * takler ikke alltid SVG via data-URI), bilder som <image> med base64. Tom streng hvis fila ikke kan leses.
  */
 function iconMarkup(path: string, x: number, y: number, w: number, h: number): string {
-	if (path === DEFAULT_PAGE_ICON) return fitGroup(DEFAULT_PAGE_ICON_INNER, 0, 0, 24, 24, x, y, w, h);
+	if (path.startsWith(DEFAULT_PAGE_ICON_PREFIX)) return fitGroup(defaultPageIconInner(toInt(path.slice(DEFAULT_PAGE_ICON_PREFIX.length), 1)), 0, 0, 24, 24, x, y, w, h);
 	try {
 		const mtimeMs = statSync(path).mtimeMs;
 		let entry = iconCache.get(path);
