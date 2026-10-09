@@ -204,7 +204,18 @@ U = {
     "mail": ukey("Mail", g_mail), "calendar": ukey("Calendar", g_calendar), "fav": ukey("Favorites", gi.g_star), "settings": ukey("Settings", gi.g_gear),
     "lights": ukey("Lights", gi.g_light),
 }
-PAGES = {1: ("Home", gi.g_home), 2: ("Edit", g_brush), 3: ("Stream", g_rec), 4: ("Music", g_note)}
+def g_num(n):
+    """Sidetallet som ikon: stort tall i en avrundet rute, så det er lett å se hvilken side tasten gjelder."""
+    def draw(d, cx, cy, k, c, w):
+        d.rounded_rectangle((cx - 19 * k, cy - 21 * k, cx + 19 * k, cy + 17 * k), radius=7 * k, outline=c, width=w)
+        fo = f(int(30 * k), "bold")
+        t = str(n)
+        tw = d.textlength(t, font=fo)
+        d.text((cx - tw / 2, cy - 23 * k), t, font=fo, fill=c)
+    return draw
+
+
+PAGES = {1: ("Home", g_num(1)), 2: ("Edit", g_num(2)), 3: ("Stream", g_num(3)), 4: ("Music", g_num(4))}
 mk = lambda p, lit=True: dtile(PAGES[p][0], f"Page {p}", "", PAGES[p][1], lit=lit)
 stp = lambda p, prev=False: i2.step(p, PAGES[p][0], PAGES[p][1], prev)
 
@@ -241,8 +252,8 @@ def no_dial(out):
 def virtual(out):
     img, d = i2.header("Virtual Stream Deck as a remote", "Put DeckSync keys on a virtual deck on your screen and save keys on the real ones.")
     KEYW, GAP, PAD = il.KEY, il.GAP, il.PAD
-    vk = [stp(1, True), i2.tile("Edit", "Page 2", "Deck1", g_brush, lit=True), stp(3),
-          i2.tile("Home", "Page 1", "go to", gi.g_home), i2.tile("Music", "Page 4", "go to", g_note), i2.tile("ALL", note="target", big=True)]
+    vk = [stp(1, True), i2.tile("Edit", "Page 2", "Deck1", g_num(2), lit=True), stp(3),
+          i2.tile("Home", "Page 1", "go to", g_num(1)), i2.tile("Music", "Page 4", "go to", g_num(4)), i2.tile("ALL", note="target", big=True)]
     vw, vh = 3 * KEYW + 2 * GAP + 2 * PAD, 2 * KEYW + GAP + 2 * PAD
     x1, y1 = 150, 300
     d.rounded_rectangle((x1 - 6, y1 - 42, x1 + vw + 6, y1 + vh + 14), radius=18, fill=(8, 12, 18))
