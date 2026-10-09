@@ -20,7 +20,7 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 
 ## Examples
 
-**Follow mode.** Both decks on page 2. The page markers show the page name and icon, the green square means the decks are in sync, and the strip reads `ALL: Page 2`.
+**Follow mode.** Both decks on page 2. The page markers show the page name and icon, the lit frame means the decks are in sync, and the strip reads `ALL: Page 2`.
 
 ![Every deck on the same page](docs/examples/1-follow.png)
 
@@ -94,7 +94,7 @@ Right-click DeckSync in the actions list and choose Uninstall. The DeckSync prof
 ## Actions
 
 ### Page marker
-One per page. The key shows the page's name and icon from the Stream Deck app, with "Page 3" in the corner and a square that lights up when the other decks are on the same page. Setting **This page** is the page number the marker sits on (pre-filled in the DeckSync profiles). **Others go to page** maps pages freely, e.g. page 2 on this deck sends the others to page 4. Pressing a marker forces a resync.
+One per page. The key shows the page's name and icon from the Stream Deck app, with "Page 3" in the corner and a frame that lights up when the other decks are on the same page. Setting **This page** is the page number the marker sits on (pre-filled in the DeckSync profiles). **Others go to page** maps pages freely, e.g. page 2 on this deck sends the others to page 4. Pressing a marker forces a resync.
 
 ### Page indicator
 A display key in the same style as the page marker, placed wherever you like.
@@ -120,6 +120,9 @@ A key that switches the same target as the page dial. Shows the current target a
 
 ### Deck names
 Open the settings of any Page dial or Target key. One text field per connected deck lets you name it. Names are shared by every dial and Target key.
+
+### Colours
+Every DeckSync key is a black key with a thin frame that lights up in the accent colour when the decks are in sync. Open the settings of a Page marker, Page indicator, Page step, Page dial or Target key to set your own hex codes for the accent, the frame, the background and the text. The colours apply to all DeckSync keys and the dial strip.
 
 ### Page names
 Pages are named in the Stream Deck app, in the DeckSync profile of each deck. DeckSync reads those names from the app's profile files and updates the markers, the dial and the Go to page lists within a second. With target ALL, the dial shows a page name when every deck agrees on it, otherwise "Page 3".

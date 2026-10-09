@@ -24,5 +24,20 @@
 		A page dial for decks without one. The key shows the page it goes to, with that page's name and icon from the Stream Deck app.<br>
 		"Next, hold for previous" puts both directions on one key, handy on small decks.
 	</p>
+	<sdpi-item label="Accent colour">
+		<sdpi-textfield global setting="color_accent" pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" placeholder="#26B8A8"></sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item label="Frame colour">
+		<sdpi-textfield global setting="color_frame" pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" placeholder="#464A52"></sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item label="Background">
+		<sdpi-textfield global setting="color_background" pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" placeholder="#0A0B0D"></sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item label="Text colour">
+		<sdpi-textfield global setting="color_text" pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" placeholder="#FFFFFF"></sdpi-textfield>
+	</sdpi-item>
+	<p style="color:#999;font-size:11px;margin:8px 12px;line-height:1.4">
+		Colours are hex codes, e.g. #FF8800, and apply to every DeckSync key and the dial strip. The accent lights the frame when the decks are in sync. Empty = default.
+	</p>
 </body>
 </html>

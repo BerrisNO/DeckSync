@@ -10,8 +10,23 @@
 		<sdpi-item label="Deck names"><span style="color:#999">Fetching decks…</span></sdpi-item>
 	</div>
 	<p style="color:#999;font-size:11px;margin:8px 12px;line-height:1.4">
-		The deck name is shown on the page dial ("Programming · p3 → Lights") and on the Target key. Names are shared by all page dials and Target keys. Empty = the device's own name.<br>
+		The deck name is shown on the page dial ("Deck1 - Edit") and on the Target key. Names are shared by all page dials and Target keys. Empty = the device's own name.<br>
 		Page names come from the Stream Deck app: name the pages of the DeckSync profiles there, and the dial, the page markers and Go to page pick them up.
+	</p>
+	<sdpi-item label="Accent colour">
+		<sdpi-textfield global setting="color_accent" pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" placeholder="#26B8A8"></sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item label="Frame colour">
+		<sdpi-textfield global setting="color_frame" pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" placeholder="#464A52"></sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item label="Background">
+		<sdpi-textfield global setting="color_background" pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" placeholder="#0A0B0D"></sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item label="Text colour">
+		<sdpi-textfield global setting="color_text" pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" placeholder="#FFFFFF"></sdpi-textfield>
+	</sdpi-item>
+	<p style="color:#999;font-size:11px;margin:8px 12px;line-height:1.4">
+		Colours are hex codes, e.g. #FF8800, and apply to every DeckSync key and the dial strip. The accent lights the frame when the decks are in sync. Empty = default.
 	</p>
 	<script>
 		(async () => {

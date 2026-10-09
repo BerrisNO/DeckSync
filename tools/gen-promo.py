@@ -170,6 +170,30 @@ def ukey(label, glyph, fill=None):
     return img.resize((KEY, KEY), Image.LANCZOS)
 
 
+def dtile(text, number="", note="", glyph=None, lit=None, big=False):
+    """DeckSync-tast slik pluginen tegner den: svart, tynn ramme som lyser i aksentfargen i synk."""
+    S, q = 576, 4
+    img, d = blank()
+    d.rounded_rectangle((16, 16, S - 16, S - 16), radius=68, outline=CYAN if lit else (70, 74, 82), width=16 if lit else 12)
+    if number:
+        d.text((17 * q, 14 * q), number, font=f(15 * q, "semi"), fill=(150, 158, 170))
+    if glyph:
+        glyph(d, 72 * q, 64 * q, q * 1.15, WHITE, int(4.5 * q))
+        fo = f(19 * q, "bold")
+        tw = d.textlength(text, font=fo)
+        d.text(((S - tw) / 2, (88 if note else 98) * q), text, font=fo, fill=WHITE)
+    else:
+        fo = f((34 if big else 24) * q, "bold")
+        tw = d.textlength(text, font=fo)
+        d.text(((S - tw) / 2, (50 if big else 56) * q), text, font=fo, fill=WHITE)
+    if note:
+        fo = f(14 * q, "semi")
+        tw = d.textlength(note, font=fo)
+        d.text(((S - tw) / 2, 112 * q), note, font=fo, fill=(150, 158, 170))
+    return img.resize((KEY, KEY), Image.LANCZOS)
+
+
+i2.tile = dtile
 U = {
     "undo": ukey("Undo", g_undo), "redo": ukey("Redo", g_redo), "save": ukey("Save", g_save), "export": ukey("Export", g_export),
     "brush": ukey("Brush", g_brush, ORANGE), "crop": ukey("Crop", g_crop), "layers": ukey("Layers", g_layers), "text": ukey("Text", g_text),
@@ -181,7 +205,7 @@ U = {
     "lights": ukey("Lights", gi.g_light),
 }
 PAGES = {1: ("Home", gi.g_home), 2: ("Edit", g_brush), 3: ("Stream", g_rec), 4: ("Music", g_note)}
-mk = lambda p, lit=True: il.marker(p, PAGES[p][0], PAGES[p][1], lit)
+mk = lambda p, lit=True: dtile(PAGES[p][0], f"Page {p}", "", PAGES[p][1], lit=lit)
 stp = lambda p, prev=False: i2.step(p, PAGES[p][0], PAGES[p][1], prev)
 
 E = empty()

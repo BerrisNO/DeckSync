@@ -108,7 +108,6 @@ const xmlEscape = (t: string): string => t.replace(/[<>&"']/g, (c) => ({ "<": "&
 // ---------------------------------------------------------------------------------------------
 
 const KEY_FONT = `font-family="Segoe UI, Arial, sans-serif"`;
-const LIT = "#35D07F";
 type Fit = { size: number; lines: string[] };
 
 /** Bryter tekst til maks `maxLines` linjer med størst mulig skrift fra `sizes`. */
@@ -162,32 +161,47 @@ type TileOptions = {
 	icon?: string;
 };
 
+/** Standardfarger for tastene. Brukeren kan overstyre dem med hex-koder i innstillingene (globalt). */
+const DEFAULT_COLORS = { accent: "#26B8A8", frame: "#464A52", background: "#0A0B0D", text: "#FFFFFF" };
+type ColorKey = keyof typeof DEFAULT_COLORS;
+
+/** Farge fra innstillingene (`color_<navn>`, f.eks. "#ff8800" eller "f80"), ellers standard. */
+function color(key: ColorKey): string {
+	const v = extraGlobals[`color_${key}`];
+	if (typeof v === "string") {
+		const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(v.trim());
+		if (m) return `#${m[1]}`;
+	}
+	return DEFAULT_COLORS[key];
+}
+
+/**
+ * Tasten: svart som en vanlig Stream Deck-tast, med en tynn ramme som lyser i aksentfargen når decket er i synk.
+ * Sidenummer oppe til venstre, ikon, navn, og eventuelt et notat nederst.
+ */
 function tileSvg(text: string, { number = "", note = "", lit = false, dim = false, icon = "" }: TileOptions = {}): string {
-	const fill = dim ? "#161C25" : "#232E3D";
-	const textColor = dim ? "#3A4657" : "#FFFFFF";
+	const textColor = color("text");
 	const hasNumber = number !== "";
 	const hasNote = note !== "";
-	const top0 = hasNumber ? 34 : 12;
-	const bottom0 = hasNote ? 112 : 132;
+	const top0 = hasNumber ? 36 : 14;
+	const bottom0 = hasNote ? 112 : 130;
 	const iconSvg = icon && !dim ? iconMarkup(icon, 22, top0, 100, bottom0 - top0 - 26) : "";
 	const hasImage = iconSvg !== "";
 	const sizes = hasImage ? [20, 18, 16, 14] : hasNumber || hasNote ? [27, 24, 21, 18, 16] : [36, 31, 27, 23, 20];
-	const label = fitText(text, 120, sizes, hasImage ? 1 : 2);
+	const label = fitText(text, 116, sizes, hasImage ? 1 : 2);
 	const small = (x: number, y: number, anchor: string, value: string, opacity: number): string =>
-		`<text x="${x}" y="${y}" font-size="16" font-weight="600" fill="${dim ? "#55637A" : textColor}" fill-opacity="${opacity}" text-anchor="${anchor}" ${KEY_FONT}>${xmlEscape(value)}</text>`;
+		`<text x="${x}" y="${y}" font-size="15" font-weight="600" fill="${textColor}" fill-opacity="${opacity}" text-anchor="${anchor}" ${KEY_FONT}>${xmlEscape(value)}</text>`;
 	const labelY = hasImage ? bottom0 - 12 : (top0 + bottom0) / 2 + (hasNumber ? 2 : 0);
-	// Med ikon (hvitt) over navnet får navnet en lys grå, så de to ikke flyter sammen.
-	const labelColor = hasImage && !dim ? "#AEB9C7" : textColor;
 	return (
 		`<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 144 144">` +
-		`<rect width="144" height="144" fill="#10151C"/>` +
-		`<rect x="6" y="6" width="132" height="132" rx="14" fill="${fill}" stroke="${dim ? "#232E3D" : "#3A4657"}" stroke-width="3"/>` +
+		`<rect width="144" height="144" fill="${color("background")}"/>` +
+		`<rect x="5" y="5" width="134" height="134" rx="18" fill="none" stroke="${lit ? color("accent") : color("frame")}" stroke-width="${lit ? 4 : 3}"/>` +
+		`<g opacity="${dim ? 0.4 : 1}">` +
 		iconSvg +
-		textBlock(label, labelY, labelColor, 700) +
-		(hasNumber ? small(16, 28, "start", number, dim ? 1 : 0.75) : "") +
-		(hasNote ? small(72, 129, "middle", note, 0.6) : "") +
-		(hasNumber ? `<rect x="113" y="14" width="17" height="17" rx="3" fill="${lit ? LIT : dim ? "#1B222C" : "#0E1319"}" stroke="${lit ? LIT : "#3A4657"}" stroke-width="1.5"/>` : "") +
-		`</svg>`
+		textBlock(label, labelY, textColor, 700) +
+		(hasNumber ? small(17, 30, "start", number, 0.6) : "") +
+		(hasNote ? small(72, 128, "middle", note, 0.6) : "") +
+		`</g></svg>`
 	);
 }
 
@@ -736,7 +750,6 @@ const row = (value: string, size: number, color = "#ffffff", weight = 400, align
 const EMPTY_ROW = row("", 14);
 const DIM = "#7f8da0";
 const GREY = "#9fb3c8";
-const CYAN = "#26b8a8";
 type StripFeedback = { r1: StripRow; r2: StripRow; r3: StripRow; r4: StripRow };
 const emptyStrip = (): StripFeedback => ({ r1: EMPTY_ROW, r2: EMPTY_ROW, r3: EMPTY_ROW, r4: EMPTY_ROW });
 
@@ -759,13 +772,13 @@ function statusFeedback(): StripFeedback {
 	const inSyncAll = decks.length > 1 && !!first && pages.every((p) => p === first);
 	let lines: string[];
 	if (inSyncAll) {
-		out.r1 = row(`ALL: Page ${first}`, 20, CYAN, 700);
+		out.r1 = row(`ALL: Page ${first}`, 20, color("accent"), 700);
 		lines = decks.map((d, i) => {
 			const title = pageNameFor(first, d);
 			return title ? `${deckTag(d, i)} - ${title}` : deckTag(d, i);
 		});
 	} else if (decks.length === 1) {
-		out.r1 = row(`Page ${first ?? "–"}`, 20, CYAN, 700);
+		out.r1 = row(`Page ${first ?? "–"}`, 20, color("accent"), 700);
 		const title = first ? pageNameFor(first, decks[0]!) : undefined;
 		lines = [title ? `${deckTag(decks[0]!, 0)} - ${title}` : deckTag(decks[0]!, 0)];
 	} else {
@@ -787,13 +800,13 @@ function statusFeedback(): StripFeedback {
 function selectionFeedback(): StripFeedback {
 	const out = emptyStrip();
 	if (holding) {
-		out.r1 = row("TURN: DECK", 20, CYAN, 700);
+		out.r1 = row("TURN: DECK", 20, color("accent"), 700);
 		out.r2 = row(`target: ${targetLabel()}`, 15);
 		return out;
 	}
 	const targetDevice = target === "all" ? undefined : streamDeck.devices.getDeviceById(target);
 	const name = targetDevice ? pageNameFor(dialPage, targetDevice) : pageNameAll(dialPage);
-	out.r1 = row(`→ Page ${dialPage}`, 20, CYAN, 700);
+	out.r1 = row(`→ Page ${dialPage}`, 20, color("accent"), 700);
 	out.r2 = row(name ?? "", 15);
 	out.r3 = row(`target: ${targetLabel()}`, 13, GREY);
 	return out;
@@ -816,7 +829,8 @@ function showSelection(): void {
 
 async function refreshDial(a: DialAction<JsonObject>): Promise<void> {
 	try {
-		await a.setFeedback(holding || Date.now() < selectionUntil ? selectionFeedback() : statusFeedback());
+		const accent = color("accent");
+		await a.setFeedback({ ...(holding || Date.now() < selectionUntil ? selectionFeedback() : statusFeedback()), line: { value: 100, bar_bg_c: accent, bar_fill_c: accent } });
 	} catch {
 		/* ignorer */
 	}
