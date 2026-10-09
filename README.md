@@ -9,6 +9,7 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 ## Features
 
 - **Follow mode.** Every page in a DeckSync profile carries a page marker. When a page appears on one deck, the other decks jump to the same page. No loops, no polling.
+- **No dial required.** Page step keys give decks without a dial the same next/previous control, and show the page they go to.
 - **Page indicator.** A display key that shows which page any deck is on, name and number, wherever you put it.
 - **Go to page.** One key sends each deck to its own page, for example the 15-key deck to page 2 while Stream Deck + stays on page 1.
 - **Page dial** (Stream Deck +). Turn to pick a page, press to go there, hold and turn to choose the target (ALL decks or a single one). The touch strip shows the page name and `p3 → ALL`.
@@ -49,7 +50,7 @@ Requires the Stream Deck app 7.1 or newer on Windows 10+ or macOS 12+.
 
 ## How it works
 
-The Stream Deck app does not tell plugins when a page changes, and plugins can only switch a device to profiles bundled with the plugin. DeckSync therefore brings its own profile per device type (`DeckSync 15`, `DeckSync Plus`, …), ten pages each, with a **page marker** in the top-right key of every page. There are no Next/Previous keys: pages are changed with the page dial, Go to page keys or the Page indicator, and the markers keep the decks in step.
+The Stream Deck app does not tell plugins when a page changes, and plugins can only switch a device to profiles bundled with the plugin. DeckSync therefore brings its own profile per device type (`DeckSync 15`, `DeckSync Plus`, …), ten pages each, with a **page marker** in the top-right key of every page. Decks with dials get the page dial; decks without get Previous and Next page keys in the bottom corners.
 
 When a marker becomes visible, DeckSync knows which page that deck is showing and moves the other decks to the same page. Switches that DeckSync itself requested are recognised as echoes and never trigger another switch.
 
@@ -92,8 +93,11 @@ A display key in the same style as the page marker, placed wherever you like.
 
 Tip: add one Page indicator and pin it to its position in the Stream Deck app. It then follows onto every page and shows the correct name, icon and page number for that deck, so one is enough. It shows which page a deck is on: this deck, or another deck chosen in its settings (that deck's name is shown at the bottom). If the page has an icon in the Stream Deck app, the icon is shown above the name. Press it to take this deck to the shown page, or, when it shows its own deck, to force a resync of the others.
 
+### Page step
+Next or previous page on an ordinary key, for decks without a dial. The key shows the page it goes to, with that page's name and icon. Settings: direction (Next, Previous, or "Next, hold for previous" to fit both on one key) and what it moves (all decks, this deck only, or the Target key's choice). The DeckSync profiles for decks without dials come with a Previous and a Next key in the bottom corners.
+
 ### Go to page
-Set a target page per device type. Pressing the key, dial or touch strip sends each deck to its page, including the deck the key is on. An empty field leaves that deck where it is.
+Pick a page for all decks, or a page per connected deck. Pressing the key, dial or touch strip sends each deck to its page, including the deck the key is on. "Unchanged" leaves that deck where it is.
 
 ### Page dial (Stream Deck +)
 - **Turn**: pick a page (1–10). The touch strip shows its name, nothing is sent yet.

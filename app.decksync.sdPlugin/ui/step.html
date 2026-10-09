@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="utf-8" />
+	<title>DeckSync page step</title>
+	<script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
+</head>
+<body>
+	<sdpi-item label="Direction">
+		<sdpi-select setting="mode" default="next">
+			<option value="next">Next page</option>
+			<option value="prev">Previous page</option>
+			<option value="both">Next, hold for previous</option>
+		</sdpi-select>
+	</sdpi-item>
+	<sdpi-item label="Moves">
+		<sdpi-select setting="scope" default="all">
+			<option value="all">All decks</option>
+			<option value="this">This deck only</option>
+			<option value="target">The Target key's choice</option>
+		</sdpi-select>
+	</sdpi-item>
+	<p style="color:#999;font-size:11px;margin:8px 12px;line-height:1.4">
+		A page dial for decks without one. The key shows the page it goes to, with that page's name and icon from the Stream Deck app.<br>
+		"Next, hold for previous" puts both directions on one key, handy on small decks.
+	</p>
+</body>
+</html>

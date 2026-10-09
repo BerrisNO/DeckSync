@@ -107,10 +107,27 @@
 			]
 		},
 		{
+			"Name": "Page step",
+			"UUID": "app.decksync.step",
+			"Icon": "imgs/step",
+			"Tooltip": "Next or previous page on a key, for decks without a dial. Shows the page it goes to. Moves all decks, this deck or the target.",
+			"PropertyInspectorPath": "ui/step.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/key",
+					"TitleAlignment": "bottom",
+					"FontSize": 12
+				}
+			]
+		},
+		{
 			"Name": "Go to page",
 			"UUID": "app.decksync.goto",
 			"Icon": "imgs/goto",
-			"Tooltip": "Press: send each deck to the page you set. Empty field = that deck stays put.",
+			"Tooltip": "Press: send all decks, or each deck, to the page you pick. Unchanged = that deck stays put.",
 			"PropertyInspectorPath": "ui/goto.html",
 			"Controllers": [
 				"Keypad",

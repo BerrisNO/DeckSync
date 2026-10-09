@@ -1,6 +1,6 @@
 // Genererer én DeckSync-profil per enhetstype (zip med JSON, samme struktur som appens egne eksporter),
 // med sidemarkør øverst til høyre på hver side og sidehjul på siste dial der enheten har dialer.
-// Ingen Neste/Forrige-taster: sidene byttes med sidehjulet, Go to page eller indikatoren.
+// Deck uten dial får «Page step»-taster (forrige/neste) nederst i hjørnene.
 // Skriver også Profiles-blokken i manifestet, så manifest og filer alltid stemmer overens.
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -10,6 +10,7 @@ const PLUGIN_DIR = "app.decksync.sdPlugin";
 const PLUGIN_UUID = "app.decksync";
 const MARKER_UUID = `${PLUGIN_UUID}.marker`;
 const DIAL_UUID = `${PLUGIN_UUID}.dial`;
+const STEP_UUID = `${PLUGIN_UUID}.step`;
 const NO_PAGE = "00000000-0000-0000-0000-000000000000";
 
 /** Deterministisk UUID fra en streng, så bygget gir samme filer hver gang. */
@@ -59,6 +60,12 @@ export function generateProfiles() {
 			const keys = {
 				[`${d.columns - 1},0`]: actionEntry(MARKER_UUID, "Page marker", ownPlugin, { page, showLabel: true }, `marker/${d.type}/${page}`),
 			};
+			if (d.dials === 0) {
+				// Deck uten dial: forrige/neste side nederst i hjørnene (flytter alle deck).
+				const bottom = d.rows - 1;
+				keys[`0,${bottom}`] = actionEntry(STEP_UUID, "Page step", ownPlugin, { mode: "prev", scope: "all" }, `step-prev/${d.type}/${page}`);
+				keys[`${d.columns - 1},${bottom}`] = actionEntry(STEP_UUID, "Page step", ownPlugin, { mode: "next", scope: "all" }, `step-next/${d.type}/${page}`);
+			}
 			const controllers = [{ Actions: keys, Type: "Keypad" }];
 			if (d.dials > 0) {
 				controllers.push({ Actions: { [`${d.dials - 1},0`]: actionEntry(DIAL_UUID, "Page dial", ownPlugin, {}, `dial/${d.type}/${page}`) }, Type: "Encoder" });

@@ -24,3 +24,8 @@ await d.onDialDown(dev("B", {})); await wait(650); await d.onDialUp(dev("B", {})
 await d.onDialDown(dev("B", {})); await d.onDialRotate(dev("B", { ticks: 1, pressed: true })); await d.onDialUp(dev("B", {})); await wait(50); log("hold+vri -> mål A, ingen sending");
 await d.onDialRotate(dev("B", { ticks: 1 })); await d.onDialDown(dev("B", {})); await wait(50); await d.onDialUp(dev("B", {})); await wait(50); log("side 4, kort trykk -> bare A");
 await d.onDialDown(dev("B", {})); await d.onDialRotate(dev("B", { ticks: -1, pressed: true })); await d.onDialUp(dev("B", {})); await d.onDialDown(dev("B", {})); await wait(50); await d.onDialUp(dev("B", {})); await wait(50); log("hold+vri tilbake -> ALLE, trykk -> begge side 4");
+const st = registry["app.decksync.step"];
+await g.onKeyDown(gev("A", { all: 5 })); log("goto all -> 5");
+await st.onKeyDown(dev("A", { settings: { mode: "next", scope: "all" } })); log("step next, all -> 6");
+await st.onKeyDown(dev("A", { settings: { mode: "prev", scope: "this" } })); log("step prev, this -> A 5");
+await g.onKeyDown(gev("A", { page_B: 2 })); log("goto per deck: B -> 2");

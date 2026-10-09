@@ -9,6 +9,7 @@ import streamDeck, {
 	type Device,
 	type DidReceiveSettingsEvent,
 	type KeyDownEvent,
+	type KeyUpEvent,
 	type TouchTapEvent,
 	type WillAppearEvent,
 	type WillDisappearEvent,
@@ -274,25 +275,23 @@ class PageMarker extends SingletonAction<MarkerSettings> {
 // Gå til side
 // ---------------------------------------------------------------------------------------------
 
-type GotoSettings = {
-	/** Side for Stream Deck med 15 taster (Module 15 / MK.2). Tomt = den røres ikke. */
-	sd15?: number | string;
-	/** Side for Stream Deck +. Tomt = den røres ikke. */
-	plus?: number | string;
-};
+/**
+ * Innstillinger for «Go to page»: `all` = side for alle deck, ellers `page_<enhets-id>` per deck.
+ * `sd15`/`plus` er de gamle feltene per enhetstype og virker fortsatt.
+ */
+type GotoSettings = { [key: string]: JsonValue };
 
-/** Hvilken innstilling i «Gå til side» som gjelder for hver enhetstype (0 = Stream Deck, 7 = Stream Deck +). */
-const TARGET_SETTING_BY_TYPE = new Map<number, keyof GotoSettings>([
+const LEGACY_GOTO_KEY_BY_TYPE = new Map<number, string>([
 	[0, "sd15"],
 	[7, "plus"],
 ]);
 
-/** Sender hver enhet til siden som er satt for den, også enheten knappen ligger på. Tomt felt = enheten røres ikke. */
+/** Sender hvert deck til siden som er satt for det, også decket knappen ligger på. Tomt felt = decket røres ikke. */
 async function gotoPages(settings: GotoSettings): Promise<void> {
+	const all = toInt(settings.all, 0);
 	for (const device of syncable()) {
-		const key = TARGET_SETTING_BY_TYPE.get(device.type);
-		if (!key) continue;
-		const page = toInt(settings[key], 0);
+		const legacy = LEGACY_GOTO_KEY_BY_TYPE.get(device.type);
+		const page = all || toInt(settings[`page_${device.id}`], 0) || (legacy ? toInt(settings[legacy], 0) : 0);
 		if (page < 1) continue;
 		await jumpTo(device, page, "go to page");
 	}
@@ -310,6 +309,83 @@ class GotoPage extends SingletonAction<GotoSettings> {
 
 	override async onTouchTap(ev: TouchTapEvent<GotoSettings>): Promise<void> {
 		await gotoPages(ev.payload.settings);
+	}
+}
+
+// ---------------------------------------------------------------------------------------------
+// Page step: neste/forrige side på en vanlig tast, for deck uten dial. Tasten viser siden den går til.
+// ---------------------------------------------------------------------------------------------
+
+type StepSettings = {
+	/** "next" (standard), "prev", eller "both" = kort trykk neste, hold forrige. */
+	mode?: string;
+	/** "all" (standard) = alle deck, "this" = bare dette decket, "target" = det Target-tasten står på. */
+	scope?: string;
+};
+
+/** Siden et steg går til fra dette decket, eller undefined ved kanten / ukjent side. */
+function stepDestination(deviceId: string, dir: number): number | undefined {
+	const from = currentPage.get(deviceId);
+	if (!from) return undefined;
+	const to = from + dir;
+	return to >= 1 && to <= PAGES ? to : undefined;
+}
+
+async function renderStep(a: Action<StepSettings>, settings: StepSettings): Promise<void> {
+	if (!a.isKey()) return;
+	const dir = settings.mode === "prev" ? -1 : 1;
+	const to = stepDestination(a.device.id, dir);
+	const note = settings.mode === "prev" ? "\u2039 prev" : settings.mode === "both" ? "next \u203a" : "next \u203a";
+	try {
+		await a.setTitle("");
+		const svg = to
+			? tileSvg(pageNameFor(to, a.device) ?? `Page ${to}`, { number: `p${to}`, note, icon: pageIconFor(to, a.device) ?? DEFAULT_PAGE_ICON })
+			: tileSvg("\u2014", { note, dim: true });
+		await a.setImage(svgUri(svg));
+	} catch {
+		/* ignorer */
+	}
+}
+
+async function doStep(a: Action<StepSettings>, settings: StepSettings, dir: number): Promise<void> {
+	const own = streamDeck.devices.getDeviceById(a.device.id);
+	const to = stepDestination(a.device.id, dir);
+	if (!own || !to) {
+		if (a.isKey()) await a.showAlert();
+		return;
+	}
+	const scope = settings.scope ?? "all";
+	const devices = scope === "this" ? [own] : scope === "target" ? targetDevices() : syncable();
+	for (const d of devices) await jumpTo(d, to, `page step (${scope})`);
+}
+
+const STEP_HOLD_MS = 500;
+const stepDownAt = new Map<string, number>();
+
+@action({ UUID: "app.decksync.step" })
+class PageStep extends SingletonAction<StepSettings> {
+	override async onWillAppear(ev: WillAppearEvent<StepSettings>): Promise<void> {
+		await renderStep(ev.action, ev.payload.settings);
+	}
+
+	override async onDidReceiveSettings(ev: DidReceiveSettingsEvent<StepSettings>): Promise<void> {
+		await renderStep(ev.action, ev.payload.settings);
+	}
+
+	override async onKeyDown(ev: KeyDownEvent<StepSettings>): Promise<void> {
+		const mode = ev.payload.settings.mode;
+		if (mode === "both") {
+			stepDownAt.set(ev.action.id, Date.now());
+			return;
+		}
+		await doStep(ev.action, ev.payload.settings, mode === "prev" ? -1 : 1);
+	}
+
+	override async onKeyUp(ev: KeyUpEvent<StepSettings>): Promise<void> {
+		if (ev.payload.settings.mode !== "both") return;
+		const down = stepDownAt.get(ev.action.id) ?? Date.now();
+		stepDownAt.delete(ev.action.id);
+		await doStep(ev.action, ev.payload.settings, Date.now() - down >= STEP_HOLD_MS ? -1 : 1);
 	}
 }
 
@@ -362,6 +438,13 @@ async function refreshIndicators(): Promise<void> {
 	for (const a of pageIndicator.actions) {
 		try {
 			await renderIndicator(a, await a.getSettings());
+		} catch {
+			/* ignorer */
+		}
+	}
+	for (const a of pageStep.actions) {
+		try {
+			await renderStep(a, await a.getSettings());
 		} catch {
 			/* ignorer */
 		}
@@ -812,6 +895,7 @@ class TargetKey extends SingletonAction {
 }
 
 const pageMarker = new PageMarker();
+const pageStep = new PageStep();
 const pageIndicator = new PageIndicator();
 const pageDial = new PageDial();
 const targetKey = new TargetKey();
@@ -823,6 +907,7 @@ const targetKey = new TargetKey();
 streamDeck.actions.registerAction(pageMarker);
 streamDeck.actions.registerAction(new GotoPage());
 streamDeck.actions.registerAction(pageIndicator);
+streamDeck.actions.registerAction(pageStep);
 streamDeck.actions.registerAction(pageDial);
 streamDeck.actions.registerAction(targetKey);
 

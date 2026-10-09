@@ -7,11 +7,12 @@
 </head>
 <body>
 	<div id="targets">
-		<sdpi-item label="Stream Deck (15 keys)"><span style="color:#999">Loading…</span></sdpi-item>
+		<sdpi-item label="All decks"><span style="color:#999">Loading…</span></sdpi-item>
 	</div>
 	<p style="color:#999;font-size:11px;margin:8px 12px;line-height:1.4">
-		Pressing the key (or dial) sends each deck to the page you pick, including the deck the key is on.<br>
-		"Unchanged" = that deck stays put. Page names come from the Stream Deck app (name the pages of the DeckSync profiles there).
+		Pressing the key (or dial) sends the decks to the pages you pick, including the deck the key is on.<br>
+		"All decks" moves every deck to the same page and overrides the fields below. "Unchanged" = that deck stays put.<br>
+		Page names come from the Stream Deck app. Only connected decks are listed.
 	</p>
 	<script>
 		(async () => {
@@ -19,31 +20,34 @@
 			const g = (await streamDeckClient.getGlobalSettings()) || {};
 			const count = Number(g.pages) > 0 ? Number(g.pages) : 10;
 			const names = g.pageNames || {};
+			const devices = Array.isArray(g.devices) ? g.devices : [];
 			const el = document.getElementById("targets");
 			el.innerHTML = "";
-			const decks = [
-				["sd15", "Stream Deck (15 keys)", "profiles/DeckSync 15"],
-				["plus", "Stream Deck +", "profiles/DeckSync Plus"],
-			];
-			for (const [setting, label, profile] of decks) {
-				const list = Array.isArray(names[profile]) ? names[profile] : [];
+
+			const addSelect = (label, setting, list, emptyText) => {
 				const item = document.createElement("sdpi-item");
 				item.setAttribute("label", label);
 				const select = document.createElement("sdpi-select");
 				select.setAttribute("setting", setting);
 				const none = document.createElement("option");
 				none.value = "";
-				none.textContent = "Unchanged";
+				none.textContent = emptyText;
 				select.appendChild(none);
 				for (let n = 1; n <= count; n++) {
 					const opt = document.createElement("option");
 					opt.value = String(n);
-					const name = typeof list[n - 1] === "string" ? list[n - 1].trim() : "";
+					const name = list && typeof list[n - 1] === "string" ? list[n - 1].trim() : "";
 					opt.textContent = name ? `p${n} · ${name}` : `Page ${n}`;
 					select.appendChild(opt);
 				}
 				item.appendChild(select);
 				el.appendChild(item);
+			};
+
+			addSelect("All decks", "all", null, "Per deck (below)");
+			for (const d of devices) {
+				const custom = typeof g["deckname_" + d.id] === "string" ? g["deckname_" + d.id].trim() : "";
+				addSelect(custom || d.name, "page_" + d.id, names[d.profile], "Unchanged");
 			}
 		})();
 	</script>
