@@ -36,6 +36,14 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 
 ![The page dial in four steps](docs/examples/4-page-dial.png)
 
+**No dial required.** Page step keys go to the next or previous page and show where they lead.
+
+![Page step keys on decks without a dial](docs/examples/5-no-dial.png)
+
+**Virtual Stream Deck as a remote.** DeckSync keys on a virtual deck control your physical decks.
+
+![Virtual Stream Deck as a remote](docs/examples/6-virtual-remote.png)
+
 ## Supported devices
 
 | Device | Keys | Notes |
