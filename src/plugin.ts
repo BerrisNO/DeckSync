@@ -208,13 +208,13 @@ async function showLabel(a: Action<MarkerSettings>, settings: MarkerSettings): P
 			await a.setTitle("");
 			const show = settings.showLabel !== false;
 			const svg = tileSvg(show && name ? name : "", {
-				number: `p${page}`,
+				number: `Page ${page}`,
 				lit: inSync(a.device.id, page),
 				icon: pageIconFor(page, a.device) ?? DEFAULT_PAGE_ICON,
 			});
 			await a.setImage(svgUri(svg));
 		} else {
-			await a.setTitle(settings.showLabel === false ? "" : name ? `${name} · p${page}` : `Page ${page}`);
+			await a.setTitle(settings.showLabel === false ? "" : name ? `${name} · Page ${page}` : `Page ${page}`);
 		}
 	} catch {
 		/* ignorer */
@@ -353,7 +353,7 @@ async function renderStep(a: Action<StepSettings>, settings: StepSettings): Prom
 		await a.setTitle("");
 		const ref = referenceDevice(a.device.id);
 		const svg = to && ref
-			? tileSvg(pageNameFor(to, ref) ?? `Page ${to}`, { number: `p${to}`, note, icon: pageIconFor(to, ref) ?? DEFAULT_PAGE_ICON })
+			? tileSvg(pageNameFor(to, ref) ?? `Page ${to}`, { number: `Page ${to}`, note, icon: pageIconFor(to, ref) ?? DEFAULT_PAGE_ICON })
 			: tileSvg("\u2014", { note, dim: true });
 		await a.setImage(svgUri(svg));
 	} catch {
@@ -429,7 +429,7 @@ async function renderIndicator(a: Action<IndicatorSettings>, settings: Indicator
 	try {
 		await a.setTitle("");
 		const svg = tileSvg(page ? (name ?? "") : "—", {
-			number: page ? `p${page}` : "",
+			number: page ? `Page ${page}` : "",
 			note: other ? nameFor(shown) : "",
 			lit,
 			dim: !page,
@@ -635,12 +635,10 @@ function pageIconFor(page: number, device: Pick<Device, "type">): string | undef
 
 const iconCache = new Map<string, { mtimeMs: number; markup: (x: number, y: number, w: number, h: number) => string }>();
 
-/** Brukes som ikonsti når siden ikke har eget ikon i appen: et enkelt sideikon i samme hvite strek som appens egne. */
+/** Brukes som ikonsti når siden ikke har eget ikon i appen: et lite tastenett (en Stream Deck-side) i samme hvite strek som appens egne. */
 const DEFAULT_PAGE_ICON = "default:page";
 const DEFAULT_PAGE_ICON_INNER =
-	`<path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>` +
-	`<path d="M14 3.5V8h4" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>` +
-	`<path d="M9 12h6M9 15.5h6" stroke="white" stroke-width="1.6" stroke-linecap="round"/>`;
+	`<rect x="2.3" y="5.6" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="9.3" y="5.6" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="16.3" y="5.6" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="2.3" y="13" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="9.3" y="13" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/><rect x="16.3" y="13" width="5.4" height="5.4" rx="1.3" fill="none" stroke="white" stroke-width="1.5"/>`;
 
 /** Skalerer og sentrerer SVG-innhold med gitt viewBox i en boks (appens tegner ignorerer nestede <svg>). */
 function fitGroup(inner: string, vx: number, vy: number, vw: number, vh: number, bx: number, by: number, bw: number, bh: number): string {
@@ -745,7 +743,7 @@ const emptyStrip = (): StripFeedback => ({ r1: EMPTY_ROW, r2: EMPTY_ROW, r3: EMP
 /** «Deck1: P3 MA3 PROG» */
 function deckLine(d: DeviceLike, index: number, page: number | undefined): string {
 	const title = page ? pageNameFor(page, d) : undefined;
-	return `${deckTag(d, index)}: ${page ? `P${page}` : "–"}${title ? ` ${title}` : ""}`;
+	return `${deckTag(d, index)}: ${page ? `Page ${page}` : "–"}${title ? ` ${title}` : ""}`;
 }
 
 /** Status: overskrift i cyan (ALL: P3, eller PAGES når deckene står ulikt) og én rad per deck under linjen. */
@@ -761,13 +759,13 @@ function statusFeedback(): StripFeedback {
 	const inSyncAll = decks.length > 1 && !!first && pages.every((p) => p === first);
 	let lines: string[];
 	if (inSyncAll) {
-		out.r1 = row(`ALL: P${first}`, 20, CYAN, 700);
+		out.r1 = row(`ALL: Page ${first}`, 20, CYAN, 700);
 		lines = decks.map((d, i) => {
 			const title = pageNameFor(first, d);
 			return title ? `${deckTag(d, i)} - ${title}` : deckTag(d, i);
 		});
 	} else if (decks.length === 1) {
-		out.r1 = row(`P${first ?? "–"}`, 20, CYAN, 700);
+		out.r1 = row(`Page ${first ?? "–"}`, 20, CYAN, 700);
 		const title = first ? pageNameFor(first, decks[0]!) : undefined;
 		lines = [title ? `${deckTag(decks[0]!, 0)} - ${title}` : deckTag(decks[0]!, 0)];
 	} else {
@@ -795,7 +793,7 @@ function selectionFeedback(): StripFeedback {
 	}
 	const targetDevice = target === "all" ? undefined : streamDeck.devices.getDeviceById(target);
 	const name = targetDevice ? pageNameFor(dialPage, targetDevice) : pageNameAll(dialPage);
-	out.r1 = row(`→ P${dialPage}`, 20, CYAN, 700);
+	out.r1 = row(`→ Page ${dialPage}`, 20, CYAN, 700);
 	out.r2 = row(name ?? "", 15);
 	out.r3 = row(`target: ${targetLabel()}`, 13, GREY);
 	return out;

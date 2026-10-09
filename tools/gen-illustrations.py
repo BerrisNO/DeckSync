@@ -33,7 +33,7 @@ def marker(page, name, glyph, lit):
     """Sidemarkøren: p-nummer, synk-firkant, sideikon og navn."""
     S, k = 576, 4
     img, d, _ = gi.tile_base(S)
-    d.text((16 * k, 15 * k), f"p{page}", font=f(16 * k, "semi"), fill=(200, 208, 218))
+    d.text((16 * k, 15 * k), f"Page {page}", font=f(16 * k, "semi"), fill=(200, 208, 218))
     d.rounded_rectangle((113 * k, 14 * k, 130 * k, 31 * k), radius=3 * k, fill=LIT if lit else (14, 19, 25), outline=LIT if lit else (58, 70, 87), width=6)
     glyph(d, 72 * k, 66 * k, k * 1.25, WHITE, int(4.5 * k))
     fo = f(19 * k, "bold")

@@ -209,8 +209,8 @@ def no_dial(out):
 def virtual(out):
     img, d = i2.header("Virtual Stream Deck as a remote", "Put DeckSync keys on a virtual deck on your screen and save keys on the real ones.")
     KEYW, GAP, PAD = il.KEY, il.GAP, il.PAD
-    vk = [stp(1, True), i2.tile("Edit", "p2", "Deck1", g_brush, lit=True), stp(3),
-          i2.tile("Home", "p1", "go to", gi.g_home), i2.tile("Music", "p4", "go to", g_note), i2.tile("ALL", note="target", big=True)]
+    vk = [stp(1, True), i2.tile("Edit", "Page 2", "Deck1", g_brush, lit=True), stp(3),
+          i2.tile("Home", "Page 1", "go to", gi.g_home), i2.tile("Music", "Page 4", "go to", g_note), i2.tile("ALL", note="target", big=True)]
     vw, vh = 3 * KEYW + 2 * GAP + 2 * PAD, 2 * KEYW + GAP + 2 * PAD
     x1, y1 = 150, 300
     d.rounded_rectangle((x1 - 6, y1 - 42, x1 + vw + 6, y1 + vh + 14), radius=18, fill=(8, 12, 18))
@@ -232,11 +232,11 @@ def virtual(out):
 
 def main():
     both("1-follow.png", lambda o: il.scene(o, "Every deck on the same page", "Turn a page on one Stream Deck and the others follow.",
-                                            EDIT_PLUS(), EDIT_15(), ([("Deck1 - Edit", WHITE), ("Deck2 - Edit", WHITE)], "ALL: P2", CYAN, SEGS)))
+                                            EDIT_PLUS(), EDIT_15(), ([("Deck1 - Edit", WHITE), ("Deck2 - Edit", WHITE)], "ALL: Page 2", CYAN, SEGS)))
     both("2-split.png", lambda o: il.scene(o, "Or send each deck its own way", "A Go to page key or the dial moves one deck. The strip shows where every deck is.",
-                                           EDIT_PLUS(False), HOME_15(), ([("Deck1: P2 Edit", WHITE), ("Deck2: P1 Home", WHITE)], "PAGES", GREY, SEGS)))
+                                           EDIT_PLUS(False), HOME_15(), ([("Deck1: Page 2 Edit", WHITE), ("Deck2: Page 1 Home", WHITE)], "PAGES", GREY, SEGS)))
     both("3-dial.png", lambda o: il.scene(o, "One dial for every page", "Turn to pick a page, press to go there. Hold and turn to choose which deck.",
-                                          EDIT_PLUS(), EDIT_15(), ([("Stream", WHITE), ("target: ALL", GREY)], "→ P3", CYAN, SEGS), dial_active=True))
+                                          EDIT_PLUS(), EDIT_15(), ([("Stream", WHITE), ("target: ALL", GREY)], "→ Page 3", CYAN, SEGS), dial_active=True))
     both("5-no-dial.png", no_dial)
     both("6-virtual-remote.png", virtual)
     print("ok")

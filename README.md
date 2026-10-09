@@ -12,15 +12,15 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 - **No dial required.** Page step keys give decks without a dial the same next/previous control, and show the page they go to.
 - **Page indicator.** A display key that shows which page any deck is on, name and number, wherever you put it.
 - **Go to page.** One key sends each deck to its own page, for example the 15-key deck to page 2 while Stream Deck + stays on page 1.
-- **Page dial** (Stream Deck +). Turn to pick a page, press to go there, hold and turn to choose the target (ALL decks or a single one). The touch strip shows the page name and `p3 → ALL`.
+- **Page dial** (Stream Deck +). Turn to pick a page, press to go there, hold and turn to choose the target (ALL decks or a single one). The touch strip shows the page name and `Page 3 → ALL`.
 - **Target key.** The same target switch on an ordinary key.
 - **Deck names.** Call your decks "Lights" and "Sound" instead of "Module 15" and "+".
-- **Page names and icons.** Name the pages and give them icons in the Stream Deck app, and DeckSync shows them everywhere: on the page marker (icon with the name underneath and "p3" in the corner), on the dial ("ALL: P3 Programming") and in the Go to page lists. Naming your pages is the single most useful setup step.
+- **Page names and icons.** Name the pages and give them icons in the Stream Deck app, and DeckSync shows them everywhere: on the page marker (icon with the name underneath and "Page 3" in the corner), on the dial ("ALL: Page 3 Programming") and in the Go to page lists. Naming your pages is the single most useful setup step.
 - **Zero setup.** DeckSync ships a ready profile for every supported device type and installs it the first time a deck is seen.
 
 ## Examples
 
-**Follow mode.** Both decks on page 2. The page markers show the page name and icon, the green square means the decks are in sync, and the strip reads `ALL: P2`.
+**Follow mode.** Both decks on page 2. The page markers show the page name and icon, the green square means the decks are in sync, and the strip reads `ALL: Page 2`.
 
 ![Every deck on the same page](docs/examples/1-follow.png)
 
@@ -87,14 +87,14 @@ Right-click DeckSync in the actions list and choose Uninstall. The DeckSync prof
 ## Getting started
 
 1. Build your pages inside the DeckSync profiles. Keep the page marker on each page; you can move it to any key.
-2. **Name the pages and give them icons.** This is what makes DeckSync readable: in the Stream Deck app, right-click a page number in the page bar of a DeckSync profile and set a name and an icon. The page markers then show the icon with the name underneath, the page dial reads "ALL: P3 Lights" instead of just "P3", and the Go to page lists show names instead of numbers. Do it on every deck, since each deck has its own profile and its own page names. Unnamed pages show only "p3" and a default icon.
+2. **Name the pages and give them icons.** This is what makes DeckSync readable: in the Stream Deck app, right-click a page number in the page bar of a DeckSync profile and set a name and an icon. The page markers then show the icon with the name underneath, the page dial reads "ALL: Page 3 Lights" instead of just "Page 3", and the Go to page lists show names instead of numbers. Do it on every deck, since each deck has its own profile and its own page names. Unnamed pages show only "Page 3" and a default icon.
 3. Change page on any deck, with the page dial, a Go to page key or the app's own Next/Previous page actions if you add them. The other decks follow.
 4. Want a deck on a different page? Use a Go to page key, or the page dial on Stream Deck +.
 
 ## Actions
 
 ### Page marker
-One per page. The key shows the page's name and icon from the Stream Deck app, with "p3" in the corner and a square that lights up when the other decks are on the same page. Setting **This page** is the page number the marker sits on (pre-filled in the DeckSync profiles). **Others go to page** maps pages freely, e.g. page 2 on this deck sends the others to page 4. Pressing a marker forces a resync.
+One per page. The key shows the page's name and icon from the Stream Deck app, with "Page 3" in the corner and a square that lights up when the other decks are on the same page. Setting **This page** is the page number the marker sits on (pre-filled in the DeckSync profiles). **Others go to page** maps pages freely, e.g. page 2 on this deck sends the others to page 4. Pressing a marker forces a resync.
 
 ### Page indicator
 A display key in the same style as the page marker, placed wherever you like.

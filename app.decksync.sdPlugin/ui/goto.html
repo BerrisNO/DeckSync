@@ -37,7 +37,7 @@
 					const opt = document.createElement("option");
 					opt.value = String(n);
 					const name = list && typeof list[n - 1] === "string" ? list[n - 1].trim() : "";
-					opt.textContent = name ? `p${n} · ${name}` : `Page ${n}`;
+					opt.textContent = name ? `Page ${n} · ${name}` : `Page ${n}`;
 					select.appendChild(opt);
 				}
 				item.appendChild(select);

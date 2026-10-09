@@ -37,7 +37,7 @@ def tile(text, number="", note="", glyph=None, lit=None, big=False):
 
 
 def step(page, name, glyph, prev=False):
-    return tile(name, f"p{page}", "‹ prev" if prev else "next ›", glyph)
+    return tile(name, f"Page {page}", "‹ prev" if prev else "next ›", glyph)
 
 
 def device(img, x, y, cols, rows, keys):
