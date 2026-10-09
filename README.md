@@ -20,11 +20,11 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 
 ## Examples
 
-**Follow mode.** Both decks on page 3. The page markers show the page name and icon, the green square means the decks are in sync, and the strip reads `ALL: P3`.
+**Follow mode.** Both decks on page 2. The page markers show the page name and icon, the green square means the decks are in sync, and the strip reads `ALL: P2`.
 
 ![Every deck on the same page](docs/examples/1-follow.png)
 
-**Split.** Stream Deck + stays on page 3 while the other deck is on page 1. The strip lists where every deck is.
+**Split.** Stream Deck + stays on page 2 while the other deck is on page 1. The strip lists where every deck is.
 
 ![Each deck its own way](docs/examples/2-split.png)
 

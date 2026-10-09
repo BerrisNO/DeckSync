@@ -57,12 +57,12 @@ def main():
     d.text((82, 122), "One dial on Stream Deck + moves every deck. The touch strip always shows where they are.", font=f(30), fill=GREY)
 
     steps = [
-        ("1", "At rest", "Shows the page of every deck.", "ALL: P3", CYAN,
-         [("Deck1 - MA3 Prog", WHITE, 28), ("Deck2 - Groups", WHITE, 28)], dict()),
-        ("2", "Turn", "Pick a page. Nothing moves yet.", "\u2192 P4", CYAN,
-         [("Playback", WHITE, 30), ("target: ALL", GREY, 26)], dict(turn=True)),
-        ("3", "Press", "All decks go to the page.", "ALL: P4", CYAN,
-         [("Deck1 - Playback", WHITE, 28), ("Deck2 - Cues", WHITE, 28)], dict(press=True)),
+        ("1", "At rest", "Shows the page of every deck.", "ALL: P2", CYAN,
+         [("Deck1 - Edit", WHITE, 28), ("Deck2 - Tools", WHITE, 28)], dict()),
+        ("2", "Turn", "Pick a page. Nothing moves yet.", "\u2192 P3", CYAN,
+         [("Stream", WHITE, 30), ("target: ALL", GREY, 26)], dict(turn=True)),
+        ("3", "Press", "All decks go to the page.", "ALL: P3", CYAN,
+         [("Deck1 - Stream", WHITE, 28), ("Deck2 - Scenes", WHITE, 28)], dict(press=True)),
         ("4", "Hold and turn", "Choose which deck to move.", "TURN: DECK", CYAN,
          [("target: Deck2", WHITE, 30)], dict(turn=True, press=True)),
     ]
