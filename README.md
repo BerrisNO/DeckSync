@@ -31,6 +31,10 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 
 ![One dial for every page](docs/examples/3-dial.png)
 
+**The dial, step by step.** At rest the strip shows every deck. Turn to pick, press to go, hold and turn to choose the deck.
+
+![The page dial in four steps](docs/examples/4-page-dial.png)
+
 ## Supported devices
 
 | Device | Keys | Notes |
