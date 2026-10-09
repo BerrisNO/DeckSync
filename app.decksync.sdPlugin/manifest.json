@@ -3,7 +3,7 @@
 	"UUID": "app.decksync",
 	"Name": "DeckSync",
 	"Version": "0.3.0.0",
-	"Author": "Berris",
+	"Author": "BerrisNO",
 	"URL": "https://github.com/BerrisNO/DeckSync",
 	"Description": "Keeps several Stream Decks on the same page, or sends each deck to its own page. Page markers on every page, Go to page keys, and a page dial for Stream Deck +.",
 	"Category": "DeckSync",
