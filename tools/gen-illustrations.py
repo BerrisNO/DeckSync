@@ -128,7 +128,7 @@ def scene(out, title, subtitle, plus, sd15, strip_args, dial_active=False, capti
 
 
 def main():
-    out = os.path.join(ROOT, "notes", "mock", "illustrations")
+    out = os.path.join(ROOT, "docs", "examples")
     os.makedirs(out, exist_ok=True)
     E = empty_key()
     segs = [("Dimmer", 98), ("Pan", 42), ("Tilt", 61)]

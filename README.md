@@ -18,6 +18,20 @@ DeckSync is a plugin for the Elgato Stream Deck app. Connect two or more Stream 
 - **Page names and icons.** Name the pages and give them icons in the Stream Deck app, and DeckSync shows them everywhere: on the page marker (icon with the name underneath and "p3" in the corner), on the dial ("ALL: P3 Programming") and in the Go to page lists. Naming your pages is the single most useful setup step.
 - **Zero setup.** DeckSync ships a ready profile for every supported device type and installs it the first time a deck is seen.
 
+## Examples
+
+**Follow mode.** Both decks on page 3. The page markers show the page name and icon, the green square means the decks are in sync, and the strip reads `ALL: P3`.
+
+![Every deck on the same page](docs/examples/1-follow.png)
+
+**Split.** Stream Deck + stays on page 3 while the other deck is on page 1. The strip lists where every deck is.
+
+![Each deck its own way](docs/examples/2-split.png)
+
+**Page dial.** Turn to pick a page, press to go there. Hold and turn to choose which deck.
+
+![One dial for every page](docs/examples/3-dial.png)
+
 ## Supported devices
 
 | Device | Keys | Notes |
