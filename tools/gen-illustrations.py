@@ -78,10 +78,10 @@ def strip(img, x, y, w, lines, header, header_color, segs):
             d.rounded_rectangle((sx + 46, y + 72, sx + 46 + 86 * val / 100, y + 79), radius=3, fill=WHITE)
     sx = x + 3 * seg + 10
     gi.draw_sync_badge(d, sx + 13, y + 20, 12, 0.1)
-    d.text((sx + 32, y + 5), header, font=f(22, "bold"), fill=header_color)
+    d.text((sx + 30, y + 8), header, font=f(18, "bold"), fill=header_color)
     d.rectangle((sx, y + 36, x + w - 12, y + 38), fill=CYAN)
     for i, (text, color) in enumerate(lines[:3]):
-        d.text((sx, y + 42 + i * 21), text, font=f(15), fill=color)
+        d.text((sx, y + 42 + i * 21), text, font=f(13), fill=color)
 
 
 def dials(img, x, y, w, active):

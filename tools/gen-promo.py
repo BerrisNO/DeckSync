@@ -139,25 +139,34 @@ def g_calendar(d, cx, cy, k, c, w):
         d.line((cx + dx * k, cy - 19 * k, cx + dx * k, cy - 11 * k), fill=c, width=w)
 
 
+KEY_BG = (10, 11, 13)
+
+
+def blank(S=576):
+    """Standard Stream Deck-tast: svart, avrundet, uten ramme."""
+    img = Image.new("RGB", (S, S), il.BODY)
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle((4, 4, S - 4, S - 4), radius=64, fill=KEY_BG)
+    return img, d
+
+
+def empty():
+    img, d = blank()
+    d.rounded_rectangle((4, 4, 572, 572), radius=64, fill=(16, 17, 20), outline=(38, 40, 46), width=6)
+    return img.resize((KEY, KEY), Image.LANCZOS)
+
+
 def ukey(label, glyph, fill=None):
-    """Vanlig tast: ikon og navn. fill gir farget flis (aktiv/advarsel)."""
+    """Vanlig tast i appens standardstil: hvitt ikon og hvit tittel på svart."""
+    global TILE
     S, q = 576, 4
-    img, d, _ = gi.tile_base(S)
-    fg = WHITE
-    if fill:
-        edge = tuple(min(255, int(ch * 0.8 + 51)) for ch in fill)
-        d.rounded_rectangle((6 * q, 6 * q, 138 * q, 138 * q), radius=14 * q, fill=fill, outline=edge, width=3 * q)
-        fg = DARK if (0.299 * fill[0] + 0.587 * fill[1] + 0.114 * fill[2]) > 150 else WHITE
-    if fill:  # glyfer med TILE-fyll (lag) trenger flisfargen
-        global TILE
-        old, TILE = TILE, fill
-        glyph(d, 72 * q, 54 * q, q * 1.15, fg, int(4.5 * q))
-        TILE = old
-    else:
-        glyph(d, 72 * q, 54 * q, q * 1.15, fg, int(4.5 * q))
-    fo = f(19 * q, "bold")
+    img, d = blank()
+    old, TILE = TILE, KEY_BG
+    glyph(d, 72 * q, 56 * q, q * 1.2, WHITE, int(4.5 * q))
+    TILE = old
+    fo = f(18 * q, "semi")
     tw = d.textlength(label, font=fo)
-    d.text(((S - tw) / 2, 92 * q), label, font=fo, fill=fg)
+    d.text(((S - tw) / 2, 98 * q), label, font=fo, fill=WHITE)
     return img.resize((KEY, KEY), Image.LANCZOS)
 
 
@@ -175,11 +184,10 @@ PAGES = {1: ("Home", gi.g_home), 2: ("Edit", g_brush), 3: ("Stream", g_rec), 4: 
 mk = lambda p, lit=True: il.marker(p, PAGES[p][0], PAGES[p][1], lit)
 stp = lambda p, prev=False: i2.step(p, PAGES[p][0], PAGES[p][1], prev)
 
-EDIT_PLUS = lambda lit=True: [U["undo"], U["redo"], U["save"], mk(2, lit), U["brush"], U["crop"], U["layers"], U["text"]]
-EDIT_15 = lambda: [U["zoom"], U["crop"], U["layers"], U["text"], mk(2), U["undo"], U["redo"], U["save"], U["export"], U["assets"],
-                   U["preview"], U["rec"], U["mic"], U["volume"], U["fav"]]
-HOME_15 = lambda: [U["mail"], U["calendar"], U["chat"], U["music"], mk(1, False), U["scene1"], U["assets"], U["timer"], U["volume"], U["mic"],
-                   U["play"], U["next"], U["fav"], U["settings"], U["lights"]]
+E = empty()
+EDIT_PLUS = lambda lit=True: [U["undo"], U["redo"], E, mk(2, lit), U["brush"], U["crop"], U["layers"], E]
+EDIT_15 = lambda: [U["zoom"], U["text"], E, E, mk(2), U["save"], U["export"], E, E, E, E, E, E, E, E]
+HOME_15 = lambda: [U["mail"], U["calendar"], E, E, mk(1, False), U["music"], U["play"], U["next"], E, E, E, E, E, E, E]
 SEGS = [("Brush size", 40), ("Opacity", 80), ("Zoom", 100)]
 
 
@@ -192,7 +200,7 @@ def no_dial(out):
     img, d = i2.header("No dial? No problem", "Page step keys go to the next or previous page, and show where they lead.")
     sd15 = EDIT_15()
     sd15[10], sd15[14] = stp(1, True), stp(3)
-    mini = [U["undo"], U["save"], mk(2), stp(1, True), U["brush"], stp(3)]
+    mini = [U["undo"], E, mk(2), stp(1, True), E, stp(3)]
     KEYW, GAP, PAD = il.KEY, il.GAP, il.PAD
     w1, w2 = 5 * KEYW + 4 * GAP + 2 * PAD, 3 * KEYW + 2 * GAP + 2 * PAD
     h1, h2 = 3 * KEYW + 2 * GAP + 2 * PAD, 2 * KEYW + GAP + 2 * PAD
