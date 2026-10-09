@@ -159,16 +159,9 @@ type TileOptions = {
 	dim?: boolean;
 	/** Sti til et ikon som tegnes over navnet (sideikonet fra appen). */
 	icon?: string;
-	/** Liten glyf oppe til høyre i stedet for synk-firkanten: "folder" eller "back". */
-	corner?: "folder" | "back";
 };
 
-const CORNER_GLYPHS: Record<"folder" | "back", string> = {
-	folder: `<path d="M114 18h7l2.5 2.5H130a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-16a1.5 1.5 0 0 1-1.5-1.5V19.5a1.5 1.5 0 0 1 1.5-1.5z" fill="none" stroke="#9FB3C8" stroke-width="1.6" stroke-linejoin="round"/>`,
-	back: `<path d="M129 25h-13M121 19l-6 6 6 6" fill="none" stroke="#9FB3C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
-};
-
-function tileSvg(text: string, { number = "", note = "", lit = false, dim = false, icon = "", corner }: TileOptions = {}): string {
+function tileSvg(text: string, { number = "", note = "", lit = false, dim = false, icon = "" }: TileOptions = {}): string {
 	const fill = dim ? "#161C25" : "#232E3D";
 	const textColor = dim ? "#3A4657" : "#FFFFFF";
 	const hasNumber = number !== "";
@@ -192,7 +185,7 @@ function tileSvg(text: string, { number = "", note = "", lit = false, dim = fals
 		textBlock(label, labelY, labelColor, 700) +
 		(hasNumber ? small(16, 28, "start", number, dim ? 1 : 0.75) : "") +
 		(hasNote ? small(72, 129, "middle", note, 0.6) : "") +
-		(corner ? CORNER_GLYPHS[corner] : hasNumber ? `<rect x="113" y="14" width="17" height="17" rx="3" fill="${lit ? LIT : dim ? "#1B222C" : "#0E1319"}" stroke="${lit ? LIT : "#3A4657"}" stroke-width="1.5"/>` : "") +
+		(hasNumber ? `<rect x="113" y="14" width="17" height="17" rx="3" fill="${lit ? LIT : dim ? "#1B222C" : "#0E1319"}" stroke="${lit ? LIT : "#3A4657"}" stroke-width="1.5"/>` : "") +
 		`</svg>`
 	);
 }
@@ -321,87 +314,6 @@ class GotoPage extends SingletonAction<GotoSettings> {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Folder og Back: «mapper» laget av sider i DeckSync-profilen. Folder åpner en side bare på dette decket
-// (de andre står i ro), Back går tilbake til siden decket kom fra. Tasten henter navn og ikon fra målsiden.
-// ---------------------------------------------------------------------------------------------
-
-type FolderSettings = {
-	/** Siden mappen åpner, på dette decket. */
-	page?: number | string;
-};
-
-/** Siden hvert deck sto på før det åpnet en mappe. */
-const parentPage = new Map<string, number>();
-
-async function renderFolder(a: Action<FolderSettings>, settings: FolderSettings): Promise<void> {
-	if (!a.isKey()) return;
-	const page = toInt(settings.page, 0);
-	try {
-		await a.setTitle("");
-		const svg = page
-			? tileSvg(pageNameFor(page, a.device) ?? `Page ${page}`, { number: `p${page}`, icon: pageIconFor(page, a.device) ?? DEFAULT_PAGE_ICON, corner: "folder" })
-			: tileSvg("Pick a page", { dim: true, corner: "folder" });
-		await a.setImage(svgUri(svg));
-	} catch {
-		/* ignorer */
-	}
-}
-
-@action({ UUID: "app.decksync.folder" })
-class FolderKey extends SingletonAction<FolderSettings> {
-	override async onWillAppear(ev: WillAppearEvent<FolderSettings>): Promise<void> {
-		await renderFolder(ev.action, ev.payload.settings);
-	}
-
-	override async onDidReceiveSettings(ev: DidReceiveSettingsEvent<FolderSettings>): Promise<void> {
-		await renderFolder(ev.action, ev.payload.settings);
-	}
-
-	override async onKeyDown(ev: KeyDownEvent<FolderSettings>): Promise<void> {
-		const page = toInt(ev.payload.settings.page, 0);
-		const own = streamDeck.devices.getDeviceById(ev.action.device.id);
-		if (!page || !own) return;
-		const from = currentPage.get(own.id);
-		if (from && from !== page) parentPage.set(own.id, from);
-		await jumpTo(own, page, "folder"); // ekko-logikken gjør at de andre deckene ikke følger etter
-	}
-}
-
-/** Siden Back går til: siden decket kom fra, ellers siden de andre deckene står på, ellers side 1. */
-function backTarget(deviceId: string): number {
-	const remembered = parentPage.get(deviceId);
-	if (remembered) return remembered;
-	const others = syncable().filter((d) => d.id !== deviceId).map((d) => currentPage.get(d.id)).filter((p): p is number => !!p);
-	return others[0] ?? 1;
-}
-
-async function renderBack(a: Action<JsonObject>): Promise<void> {
-	if (!a.isKey()) return;
-	const page = backTarget(a.device.id);
-	try {
-		await a.setTitle("");
-		await a.setImage(svgUri(tileSvg(pageNameFor(page, a.device) ?? `Page ${page}`, { number: `p${page}`, icon: pageIconFor(page, a.device) ?? DEFAULT_PAGE_ICON, corner: "back" })));
-	} catch {
-		/* ignorer */
-	}
-}
-
-@action({ UUID: "app.decksync.back" })
-class BackKey extends SingletonAction {
-	override async onWillAppear(ev: WillAppearEvent): Promise<void> {
-		await renderBack(ev.action);
-	}
-
-	override async onKeyDown(ev: KeyDownEvent): Promise<void> {
-		const own = streamDeck.devices.getDeviceById(ev.action.device.id);
-		if (!own) return;
-		const page = backTarget(own.id);
-		parentPage.delete(own.id);
-		await jumpTo(own, page, "back");
-	}
-}
-
-// ---------------------------------------------------------------------------------------------
 // Page indicator: viser siden et deck står på, i samme stil som markøren. Plasseres fritt.
 // ---------------------------------------------------------------------------------------------
 
@@ -454,14 +366,6 @@ async function refreshIndicators(): Promise<void> {
 			/* ignorer */
 		}
 	}
-	for (const a of folderKey.actions) {
-		try {
-			await renderFolder(a, await a.getSettings());
-		} catch {
-			/* ignorer */
-		}
-	}
-	for (const a of backKey.actions) await renderBack(a);
 	for (const a of pageDial.actions) if (a.isDial()) await refreshDial(a);
 }
 
@@ -909,8 +813,6 @@ class TargetKey extends SingletonAction {
 
 const pageMarker = new PageMarker();
 const pageIndicator = new PageIndicator();
-const folderKey = new FolderKey();
-const backKey = new BackKey();
 const pageDial = new PageDial();
 const targetKey = new TargetKey();
 
@@ -921,8 +823,6 @@ const targetKey = new TargetKey();
 streamDeck.actions.registerAction(pageMarker);
 streamDeck.actions.registerAction(new GotoPage());
 streamDeck.actions.registerAction(pageIndicator);
-streamDeck.actions.registerAction(folderKey);
-streamDeck.actions.registerAction(backKey);
 streamDeck.actions.registerAction(pageDial);
 streamDeck.actions.registerAction(targetKey);
 

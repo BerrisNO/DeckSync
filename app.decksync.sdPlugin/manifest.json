@@ -107,39 +107,6 @@
 			]
 		},
 		{
-			"Name": "Folder",
-			"UUID": "app.decksync.folder",
-			"Icon": "imgs/folder",
-			"Tooltip": "Opens a page of this deck's DeckSync profile as a folder: only this deck moves, the others stay. Shows the page's name and icon.",
-			"PropertyInspectorPath": "ui/folder.html",
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "imgs/key",
-					"TitleAlignment": "bottom",
-					"FontSize": 12
-				}
-			]
-		},
-		{
-			"Name": "Back",
-			"UUID": "app.decksync.back",
-			"Icon": "imgs/back",
-			"Tooltip": "Returns this deck to the page it came from before opening a folder.",
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "imgs/key",
-					"TitleAlignment": "bottom",
-					"FontSize": 12
-				}
-			]
-		},
-		{
 			"Name": "Go to page",
 			"UUID": "app.decksync.goto",
 			"Icon": "imgs/goto",
